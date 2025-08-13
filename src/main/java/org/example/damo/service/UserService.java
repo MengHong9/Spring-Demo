@@ -1,0 +1,95 @@
+package org.example.damo.service;
+
+
+import org.example.damo.entity.User;
+import org.example.damo.model.BaseResponeModel;
+import org.example.damo.model.BaseResponseWithAdditionalDateModel;
+import org.example.damo.model.Users;
+import org.example.damo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UserService {
+    @Autowired
+    UserRepository userRepository;
+
+
+
+
+
+    public ResponseEntity<BaseResponseWithAdditionalDateModel> getUser(){
+        List<User> userData = userRepository.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieve user" , userData));
+    }
+
+
+    public ResponseEntity<BaseResponeModel> createUser(Users payload){
+        User user = new User();
+        user.setName(payload.getName());
+        user.setAge(payload.getAge());
+        user.setAddress(payload.getAddress());
+        user.setEmail(payload.getEmail());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setRole(payload.getRole());
+        userRepository.save(user);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new BaseResponeModel("success" , "successfully created user"));
+    }
+
+
+    public ResponseEntity<BaseResponeModel> deleteUser(Long userId){
+        Optional<User> existingUser = userRepository.findById(userId);
+        if (existingUser.isEmpty()){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new BaseResponeModel("fail" , "user not found : " + userId));
+        }
+
+        userRepository.deleteById(userId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponeModel("success" , "successfully deleted user"));
+    }
+
+
+
+    public ResponseEntity<BaseResponeModel> updateUser( Users payload , Long userId){
+        Optional<User> existingUser = userRepository.findById(userId);
+        if (existingUser.isEmpty()){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new BaseResponeModel("fail" , "user not found : " + userId));
+        }
+
+        User updateUser = existingUser.get();
+        updateUser.setName(payload.getName());
+        updateUser.setAge(payload.getAge());
+        updateUser.setAddress(payload.getAddress());
+        updateUser.setEmail(payload.getEmail());
+        updateUser.setRole(payload.getRole());
+        userRepository.save(updateUser);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponeModel("success" , "successfully updated user"));
+    }
+
+    public ResponseEntity<BaseResponseWithAdditionalDateModel> getOneUser(@PathVariable("user_id") Long user_id) {
+        Optional<User> existingUser = userRepository.findById(user_id);
+        if (existingUser.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponseWithAdditionalDateModel("failed" , "user not found with id : "+user_id , null));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "get user successfully with id : "+user_id , existingUser.get()));
+    }
+
+}

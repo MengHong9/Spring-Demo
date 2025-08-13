@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: damo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/myDB
+    username: postgres
+    password: 412006
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
