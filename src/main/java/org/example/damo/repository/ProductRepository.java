@@ -10,6 +10,14 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT p FROM Product p WHERE :name IS NULL OR LOWER(p.productName) LIKE %:name%")
-    List<Product> findProductwithFilter(@Param("name") String name);
+    @Query("SELECT p FROM Product p WHERE "+
+            "(:name IS NULL OR LOWER(p.productName) LIKE %:name%) AND"+
+            "(:maxPrice IS NULL OR p.price <= :maxPrice) AND"+
+            "(:minPrice IS NULL OR p.price >= :minPrice)"
+    )
+    List<Product> findProductwithFilter(
+            @Param("name") String name,
+            @Param("maxPrice") Double maxPrice,
+            @Param("minPrice") Double minPrice
+    );
 }

@@ -79,10 +79,10 @@ public class ProductService {
     }
 
 
-    public ResponseEntity<BaseResponseWithAdditionalDateModel> searchProduct(String name) {
+    public ResponseEntity<BaseResponseWithAdditionalDateModel> searchProduct(String name , Double maxPrice , Double  minPrice) {
 
         String formatedName = name != null ? name.toLowerCase() : null;
-        List<Product> product = productRepository.findProductwithFilter(formatedName);
+        List<Product> product = productRepository.findProductwithFilter(formatedName , maxPrice , minPrice);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieved product!" , product));
     }
 }
