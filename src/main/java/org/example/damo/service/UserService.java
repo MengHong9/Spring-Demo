@@ -1,10 +1,12 @@
 package org.example.damo.service;
 
 
+import org.example.damo.dto.UserResponseDto;
 import org.example.damo.entity.User;
+import org.example.damo.mapper.UserMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.model.Users;
+import org.example.damo.dto.UserDto;
 import org.example.damo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,24 +24,22 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-
+    @Autowired
+    UserMapper mapper;
 
 
 
     public ResponseEntity<BaseResponseWithAdditionalDateModel> getUser(){
         List<User> userData = userRepository.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieve user" , userData));
+
+        List<UserResponseDto> dtos = mapper.toDtoList(userData);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieve user" , dtos));
     }
 
 
-    public ResponseEntity<BaseResponeModel> createUser(Users payload){
-        User user = new User();
-        user.setName(payload.getName());
-        user.setAge(payload.getAge());
-        user.setAddress(payload.getAddress());
-        user.setEmail(payload.getEmail());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setRole(payload.getRole());
+    public ResponseEntity<BaseResponeModel> createUser(UserDto payload){
+        User user = mapper.toEntity(payload);
+
         userRepository.save(user);
 
         return ResponseEntity
@@ -64,7 +64,7 @@ public class UserService {
 
 
 
-    public ResponseEntity<BaseResponeModel> updateUser( Users payload , Long userId){
+    public ResponseEntity<BaseResponeModel> updateUser(UserDto payload , Long userId){
         Optional<User> existingUser = userRepository.findById(userId);
         if (existingUser.isEmpty()){
             return ResponseEntity
@@ -74,6 +74,7 @@ public class UserService {
 
         User updateUser = existingUser.get();
         updateUser.setName(payload.getName());
+        updateUser.setPassword(payload.getPassword());
         updateUser.setAge(payload.getAge());
         updateUser.setAddress(payload.getAddress());
         updateUser.setEmail(payload.getEmail());
@@ -86,10 +87,13 @@ public class UserService {
 
     public ResponseEntity<BaseResponseWithAdditionalDateModel> getOneUser(@PathVariable("user_id") Long user_id) {
         Optional<User> existingUser = userRepository.findById(user_id);
+
         if (existingUser.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponseWithAdditionalDateModel("failed" , "user not found with id : "+user_id , null));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "get user successfully with id : "+user_id , existingUser.get()));
+        UserResponseDto dto = mapper.toDto(existingUser.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "get user successfully with id : "+user_id , dto));
     }
 
 }

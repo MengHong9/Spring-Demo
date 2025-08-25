@@ -2,7 +2,7 @@ package org.example.damo.controller;
 
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.model.Users;
+import org.example.damo.dto.UserDto;
 import org.example.damo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +29,12 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<BaseResponeModel> createUserData(@RequestBody Users payload) {
+    public ResponseEntity<BaseResponeModel> createUserData(@RequestBody UserDto payload) {
         return userService.createUser(payload);
     }
 
     @PutMapping("/{user_id}")
-    public ResponseEntity<BaseResponeModel> updateUser(@PathVariable("user_id") Long userId, @RequestBody Users payload) {
+    public ResponseEntity<BaseResponeModel> updateUser(@PathVariable("user_id") Long userId, @RequestBody UserDto payload) {
         return userService.updateUser(payload , userId);
     }
 

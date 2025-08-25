@@ -1,20 +1,14 @@
-package org.example.damo.entity;
-
-import jakarta.persistence.*;
-import lombok.Data;
+package org.example.damo.dto;
 
 
-import java.time.LocalDateTime;
 
-@Data
-@Entity
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+
+public class UserDto {
     private long id;
     private String name;
     private String password;
+    private int age;
 
     public String getPassword() {
         return password;
@@ -24,10 +18,19 @@ public class User {
         this.password = password;
     }
 
-    private int age;
     private String address;
     private String email;
-    private String role;
+    private String role="USER";
+
+    public UserDto(){}
+    public UserDto(long id, String name, int age, String address , String email , String role) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.email = email;
+        this.role = role;
+    }
 
     public long getId() {
         return id;
@@ -60,30 +63,19 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
-
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getRole() {
         return role;
     }
-
     public void setRole(String role) {
         this.role = role;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    private LocalDateTime createdAt;
 }
+
+
