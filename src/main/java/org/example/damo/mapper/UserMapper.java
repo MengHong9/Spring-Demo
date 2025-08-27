@@ -48,4 +48,17 @@ public class UserMapper {
         return entityList.stream().map(user -> this.toDto(user)).collect(Collectors.toList());
     }
 
+
+    public void  updateEntityFromDto(User entity , UserDto dto) {
+        if (entity == null || dto == null) {
+            return;
+        }
+        entity.setName(dto.getName());
+        entity.setPassword(dto.getPassword());
+        entity.setEmail(dto.getEmail());
+        entity.setAddress(dto.getAddress());
+        entity.setRole(dto.getRole());
+        entity.setAge(dto.getAge());
+    }
+
 }

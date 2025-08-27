@@ -73,12 +73,9 @@ public class UserService {
         }
 
         User updateUser = existingUser.get();
-        updateUser.setName(payload.getName());
-        updateUser.setPassword(payload.getPassword());
-        updateUser.setAge(payload.getAge());
-        updateUser.setAddress(payload.getAddress());
-        updateUser.setEmail(payload.getEmail());
-        updateUser.setRole(payload.getRole());
+
+        mapper.updateEntityFromDto(updateUser, payload);
+
         userRepository.save(updateUser);
         return ResponseEntity
                 .status(HttpStatus.OK)
