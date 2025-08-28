@@ -5,7 +5,7 @@ import org.example.damo.dto.UserResponseDto;
 import org.example.damo.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +24,6 @@ public class UserMapper {
         entity.setEmail(dto.getEmail());
         entity.setRole(dto.getRole());
         entity.setAddress(dto.getAddress());
-        entity.setCreatedAt(LocalDateTime.now());
 
         return entity;
     }
@@ -37,6 +36,9 @@ public class UserMapper {
         userDto.setAge(entity.getAge());
         userDto.setAddress(entity.getAddress());
         userDto.setRole(entity.getRole());
+        userDto.setCreatedAt(entity.getCreatedAt());
+        userDto.setUpdatedAt(entity.getUpdatedAt());
+
 
         return userDto;
     }

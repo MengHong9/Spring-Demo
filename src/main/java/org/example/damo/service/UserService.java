@@ -38,6 +38,15 @@ public class UserService {
 
 
     public ResponseEntity<BaseResponeModel> createUser(UserDto payload){
+
+        if (userRepository.existsByName(payload.getName())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new BaseResponeModel("fail" , "username already exist" ));
+        }
+
+
+        if(userRepository.existsByEmail(payload.getEmail())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new BaseResponeModel("fail" , "email already exist" ));
+        }
         User user = mapper.toEntity(payload);
 
         userRepository.save(user);

@@ -1,7 +1,11 @@
 package org.example.damo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.time.LocalDateTime;
+
+@JsonPropertyOrder({"user_id" , "username" , "email" , "age" , "location" , "role" , "created_at" , "updated_ad"})
 public class UserResponseDto {
 
     @JsonProperty("user_id")
@@ -64,7 +68,28 @@ public class UserResponseDto {
     @JsonProperty("location")
     private String address;
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     private String email;
     private String role="USER";
+
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
+
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
 }
