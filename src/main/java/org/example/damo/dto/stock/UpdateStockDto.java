@@ -1,7 +1,7 @@
-package org.example.damo.model.stock;
+package org.example.damo.dto.stock;
 
 
-public class UpdateStockModel {
+public class UpdateStockDto {
     private Integer operationType;   // 1 = add , 2 = remove
 
     public Integer getQuantity() {

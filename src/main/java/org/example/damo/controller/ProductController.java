@@ -1,9 +1,9 @@
 package org.example.damo.controller;
 
 
+import org.example.damo.dto.product.ProductDto;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.model.ProductModel;
 import org.example.damo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +34,12 @@ public class ProductController {
         return productService.searchProduct(name , maxPrice, minPrice);
     }
     @PostMapping
-    public ResponseEntity<BaseResponeModel> createProduct(@RequestBody ProductModel payload) {
+    public ResponseEntity<BaseResponeModel> createProduct(@RequestBody ProductDto payload) {
         return productService.createProduct(payload);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponeModel> updateProduct(@PathVariable Long id, @RequestBody ProductModel payload) {
+    public ResponseEntity<BaseResponeModel> updateProduct(@PathVariable Long id, @RequestBody ProductDto payload) {
         return productService.updateProduct(id, payload);
     }
 

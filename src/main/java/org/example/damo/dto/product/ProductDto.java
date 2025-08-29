@@ -1,17 +1,16 @@
-package org.example.damo.model;
-
+package org.example.damo.dto.product;
 
 import lombok.AllArgsConstructor;
+
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductModel {
+
+public class ProductDto {
     private String name;
     private String description;
-    private Double price;
 
     public String getName() {
         return name;
@@ -36,4 +35,6 @@ public class ProductModel {
     public void setPrice(Double price) {
         this.price = price;
     }
+
+    private Double price;
 }

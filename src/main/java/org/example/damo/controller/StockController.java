@@ -1,9 +1,10 @@
 package org.example.damo.controller;
 
-import org.example.damo.entity.Stock;
+
+import org.example.damo.dto.stock.StockDto;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.model.stock.UpdateStockModel;
+import org.example.damo.dto.stock.UpdateStockDto;
 import org.example.damo.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +23,22 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponeModel> createStock(@RequestBody Stock payload) {
+    public ResponseEntity<BaseResponeModel> createStock(@RequestBody StockDto payload) {
         return stockService.createStock(payload);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<BaseResponeModel> updateStockQuantity(@RequestBody UpdateStockModel payload, @PathVariable("id") Long stockId) {
+    public ResponseEntity<BaseResponeModel> updateStockQuantity(@RequestBody UpdateStockDto payload, @PathVariable("id") Long stockId) {
         return stockService.adjustQuantity(stockId, payload);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<BaseResponeModel> deleteStock(@PathVariable("id") Long stockId) {
         return stockService.deleteStock(stockId);
+    }
+
+    @GetMapping("{stockId}")
+    public ResponseEntity<BaseResponseWithAdditionalDateModel> getStock(@PathVariable("stockId") Long id) {
+        return stockService.getStockById(id);
     }
 }

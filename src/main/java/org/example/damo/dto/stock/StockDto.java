@@ -1,9 +1,9 @@
-package org.example.damo.model.stock;
+package org.example.damo.dto.stock;
 
 
-public class StockModel {
+
+public class StockDto {
     private Long productId;
-    private Integer quantity;
 
     public Long getProductId() {
         return productId;
@@ -21,5 +21,5 @@ public class StockModel {
         this.quantity = quantity;
     }
 
-
+    private Integer quantity;
 }

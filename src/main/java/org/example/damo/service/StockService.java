@@ -1,16 +1,17 @@
 package org.example.damo.service;
 
+import org.example.damo.dto.stock.StockDto;
 import org.example.damo.entity.Stock;
+import org.example.damo.mapper.StockMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.model.stock.UpdateStockModel;
+import org.example.damo.dto.stock.UpdateStockDto;
 import org.example.damo.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,27 +20,35 @@ public class StockService {
     @Autowired
     private StockRepository stockRepository;
 
+    @Autowired
+    private StockMapper stockMapper;
+
 
     public ResponseEntity<BaseResponseWithAdditionalDateModel> getStock(){
         List<Stock> stocks = stockRepository.findAll();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success", "successfully retrieved stocks", stocks));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success", "successfully retrieved stocks", stockMapper.toStockResponseDtoList(stocks)));
     }
 
 
-    public ResponseEntity<BaseResponeModel> createStock(Stock stock) {
-        Stock stockEntity = new Stock();
-
-        stockEntity.setProductId(stock.getProductId());
-        stockEntity.setQuantity(stock.getQuantity());
-        stockEntity.setCreatedAt(LocalDateTime.now());
+    public ResponseEntity<BaseResponeModel> createStock(StockDto stock) {
+        Stock stockEntity = stockMapper.toEntity(stock);
 
         stockRepository.save(stockEntity);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponeModel("success" , "successfully created stock"));
     }
 
-    public ResponseEntity<BaseResponeModel> adjustQuantity(Long stockId, UpdateStockModel updateStock) {
+    public ResponseEntity<BaseResponseWithAdditionalDateModel> getStockById(Long stockId){
+        Optional<Stock> stock = stockRepository.findById(stockId);
+        if(stock.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponseWithAdditionalDateModel("fail" , "stock not found with id : "+stockId,null));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "stock found" , stock.get()));
+    }
+
+
+    public ResponseEntity<BaseResponeModel> adjustQuantity(Long stockId, UpdateStockDto updateStock) {
         Optional<Stock> existingStock = stockRepository.findById(stockId);
 
         //stock not found in DB
@@ -61,7 +70,7 @@ public class StockService {
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponeModel("fail", "Invalid operation type "));
         }
-        stock.setUpdatedAt(LocalDateTime.now());
+
         stockRepository.save(stock);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success" , "successfully updated quantity"));
     }
