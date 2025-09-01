@@ -1,11 +1,13 @@
 package org.example.damo.service;
 
 import org.example.damo.dto.stock.StockDto;
+import org.example.damo.entity.Product;
 import org.example.damo.entity.Stock;
 import org.example.damo.mapper.StockMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.example.damo.dto.stock.UpdateStockDto;
+import org.example.damo.repository.ProductRepository;
 import org.example.damo.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,9 @@ public class StockService {
     private StockRepository stockRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private StockMapper stockMapper;
 
 
@@ -32,7 +37,13 @@ public class StockService {
 
 
     public ResponseEntity<BaseResponeModel> createStock(StockDto stock) {
-        Stock stockEntity = stockMapper.toEntity(stock);
+        Optional<Product> existingProduct = productRepository.findById(stock.getProductId());
+
+        if(existingProduct.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("fail", "product not found : "+stock.getProductId()));
+        }
+
+        Stock stockEntity = stockMapper.toEntity(stock,existingProduct.get());
 
         stockRepository.save(stockEntity);
 

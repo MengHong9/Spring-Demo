@@ -3,6 +3,7 @@ package org.example.damo.mapper;
 
 import org.example.damo.dto.stock.StockDto;
 import org.example.damo.dto.stock.StockResponseDto;
+import org.example.damo.entity.Product;
 import org.example.damo.entity.Stock;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +15,10 @@ import java.util.stream.Collectors;
 @Component
 public class StockMapper {
 
-    public Stock toEntity(StockDto dto) {
+    public Stock toEntity(StockDto dto , Product product) {
         Stock entity = new Stock();
 
-        entity.setProductId(dto.getProductId());
+        entity.setProduct(product);
         entity.setQuantity(dto.getQuantity());
 
         return entity;
@@ -28,10 +29,14 @@ public class StockMapper {
         StockResponseDto stockResponseDto = new StockResponseDto();
 
         stockResponseDto.setStockId(entity.getId());
-        stockResponseDto.setProductId(entity.getProductId());
+//        stockResponseDto.setProductId(entity.getProduct().getId());
         stockResponseDto.setQuantity(entity.getQuantity());
         stockResponseDto.setCreatedAt(entity.getCreatedAt());
         stockResponseDto.setUpdatedAt(entity.getUpdatedAt());
+
+        if (entity.getProduct() != null) {
+            stockResponseDto.setProductId(entity.getProduct().getId());
+        }
 
         return stockResponseDto;
     }
