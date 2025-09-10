@@ -4,6 +4,7 @@ package org.example.damo.service;
 import org.example.damo.dto.supplier.SupplierDto;
 import org.example.damo.dto.supplier.UpdateSupplierDto;
 import org.example.damo.entity.Supplier;
+import org.example.damo.exception.ResourceNotFoundException;
 import org.example.damo.mapper.SupplierMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -45,23 +46,19 @@ public class SupplierService {
     }
 
     public ResponseEntity<BaseResponeModel> updateSupplierById(Long id , UpdateSupplierDto dto) {
-        Optional<Supplier> existingSupplier = supplierRepository.findById(id);
+        Supplier existingSupplier = supplierRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("supplier not found with id : "+id));
 
-        if (existingSupplier.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("fail" , "supplier not found with id : "+ id));
-        }
 
-        Supplier supplier = existingSupplier.get();
-
-        supplierMapper.updateSupplierFromDto(supplier , dto);
-        supplierRepository.save(supplier);
+        supplierMapper.updateSupplierFromDto(existingSupplier , dto);
+        supplierRepository.save(existingSupplier);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success", "successfully updated supplier"));
     }
 
     public ResponseEntity<BaseResponeModel> deleteSupplierById(Long id) {
         if (!supplierRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("fail" , "supplier not found with id : "+ id));
+            throw new ResourceNotFoundException("supplier not found with id : "+id);
         }
 
         supplierRepository.deleteById(id);

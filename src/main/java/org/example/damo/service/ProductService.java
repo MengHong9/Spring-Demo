@@ -2,6 +2,8 @@ package org.example.damo.service;
 
 import org.example.damo.dto.product.ProductDto;
 import org.example.damo.entity.Product;
+import org.example.damo.exception.DuplicateResourceException;
+import org.example.damo.exception.ResourceNotFoundException;
 import org.example.damo.mapper.ProductMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -35,7 +37,7 @@ public class ProductService {
     public ResponseEntity<BaseResponeModel> createProduct(@RequestBody ProductDto product) {
 
         if(productRepository.existsByProductName(product.getName())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new BaseResponeModel("fail", "product already exists"));
+            throw new DuplicateResourceException("product already exists");
         }
 
         Product productEntity = productMapper.toEntity(product);
@@ -47,19 +49,18 @@ public class ProductService {
     }
 
     public ResponseEntity<BaseResponeModel> updateProduct(Long id, ProductDto product) {
-        Optional<Product> existing = productRepository.findById(id);
-        if (existing.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("fail" , "products not found with id : " + id));
-        }
-
-        Product updatedProduct = existing.get();
-
-        updatedProduct.setProductName(product.getName());
-        updatedProduct.setDescription(product.getDescription());
-        updatedProduct.setPrice(product.getPrice());
+        Product existing = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("product not found : "+id));
 
 
-        productRepository.save(updatedProduct);
+
+
+        existing.setProductName(product.getName());
+        existing.setDescription(product.getDescription());
+        existing.setPrice(product.getPrice());
+
+
+        productRepository.save(existing);
 
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success", "successfully updated product"));
@@ -68,19 +69,21 @@ public class ProductService {
 
     public ResponseEntity<BaseResponeModel> deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("fail" , "products not found with id : " + id));
+            throw  new ResourceNotFoundException("product not found : "+id);
         }
+
+
         productRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success", "successfully deleted product : " +id));
     }
 
     public ResponseEntity<BaseResponseWithAdditionalDateModel> getOneProduct(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponseWithAdditionalDateModel("fail" , "product not found with id : " + id , null));
-        }
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("product not found : "+id));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieved product : " +id , product));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieved product : " +id , product));
     }
 
 
