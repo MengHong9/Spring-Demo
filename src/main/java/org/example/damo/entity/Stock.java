@@ -3,6 +3,7 @@ package org.example.damo.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "stocks")
 public class Stock {
@@ -56,9 +57,13 @@ public class Stock {
         this.product = product;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;

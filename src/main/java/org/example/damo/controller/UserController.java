@@ -2,7 +2,7 @@ package org.example.damo.controller;
 
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.dto.UserDto;
+import org.example.damo.dto.user.UserDto;
 import org.example.damo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -18,8 +18,21 @@ public class ProductResponseDto {
     @JsonProperty("product_name")
     private String productName;
 
+
     private Double price;
     private String description;
+
+    @JsonProperty("total_stocks")
+    private Long totalStocks;
+
+
+    public Long getTotalStocks() {
+        return totalStocks;
+    }
+
+    public void setTotalStocks(Long totalStocks) {
+        this.totalStocks = totalStocks;
+    }
 
     public Long getProductId() {
         return productId;

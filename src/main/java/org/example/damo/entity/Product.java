@@ -51,8 +51,14 @@ public class Product {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     private List<Stock> stocks;
+
+    @Transient
+    public Long getTotalStocks() {
+        if(stocks == null) return 0L;
+        return stocks.stream().mapToLong(stock -> stock.getQuantity()).sum();
+    }
 
     public List<Stock> getStocks() {
         return stocks;

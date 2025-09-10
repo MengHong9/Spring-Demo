@@ -1,4 +1,4 @@
-package org.example.damo.dto;
+package org.example.damo.dto.user;
 
 
 

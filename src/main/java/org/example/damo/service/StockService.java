@@ -3,6 +3,7 @@ package org.example.damo.service;
 import org.example.damo.dto.stock.StockDto;
 import org.example.damo.entity.Product;
 import org.example.damo.entity.Stock;
+import org.example.damo.entity.Supplier;
 import org.example.damo.mapper.StockMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -51,6 +52,7 @@ public class StockService {
     }
 
     public ResponseEntity<BaseResponseWithAdditionalDateModel> getStockById(Long stockId){
+
         Optional<Stock> stock = stockRepository.findById(stockId);
         if(stock.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponseWithAdditionalDateModel("fail" , "stock not found with id : "+stockId,null));

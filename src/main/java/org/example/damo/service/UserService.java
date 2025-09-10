@@ -1,12 +1,12 @@
 package org.example.damo.service;
 
 
-import org.example.damo.dto.UserResponseDto;
+import org.example.damo.dto.user.UserResponseDto;
 import org.example.damo.entity.User;
 import org.example.damo.mapper.UserMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.dto.UserDto;
+import org.example.damo.dto.user.UserDto;
 import org.example.damo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

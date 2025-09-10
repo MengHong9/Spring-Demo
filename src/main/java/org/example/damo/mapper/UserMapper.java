@@ -1,7 +1,7 @@
 package org.example.damo.mapper;
 
-import org.example.damo.dto.UserDto;
-import org.example.damo.dto.UserResponseDto;
+import org.example.damo.dto.user.UserDto;
+import org.example.damo.dto.user.UserResponseDto;
 import org.example.damo.entity.User;
 import org.springframework.stereotype.Component;
 

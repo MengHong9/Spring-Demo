@@ -1,4 +1,4 @@
-package org.example.damo.dto;
+package org.example.damo.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
