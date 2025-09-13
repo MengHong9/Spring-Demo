@@ -1,4 +1,4 @@
-package org.example.damo.exception;
+package org.example.damo.exception.model;
 
 public class DuplicateResourceException extends RuntimeException {
     public DuplicateResourceException(String message) {

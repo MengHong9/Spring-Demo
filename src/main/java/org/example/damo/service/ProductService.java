@@ -2,8 +2,8 @@ package org.example.damo.service;
 
 import org.example.damo.dto.product.ProductDto;
 import org.example.damo.entity.Product;
-import org.example.damo.exception.DuplicateResourceException;
-import org.example.damo.exception.ResourceNotFoundException;
+import org.example.damo.exception.model.DuplicateResourceException;
+import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.ProductMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {

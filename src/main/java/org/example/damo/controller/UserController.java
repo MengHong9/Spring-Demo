@@ -1,6 +1,6 @@
 package org.example.damo.controller;
 
-import org.example.damo.exception.ResourceNotFoundException;
+import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.example.damo.dto.user.UserDto;

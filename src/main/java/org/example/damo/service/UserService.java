@@ -3,7 +3,7 @@ package org.example.damo.service;
 
 import org.example.damo.dto.user.UserResponseDto;
 import org.example.damo.entity.User;
-import org.example.damo.exception.ResourceNotFoundException;
+import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.UserMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {

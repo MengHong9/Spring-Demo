@@ -4,7 +4,7 @@ package org.example.damo.service;
 import org.example.damo.dto.supplier.SupplierDto;
 import org.example.damo.dto.supplier.UpdateSupplierDto;
 import org.example.damo.entity.Supplier;
-import org.example.damo.exception.ResourceNotFoundException;
+import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.SupplierMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
