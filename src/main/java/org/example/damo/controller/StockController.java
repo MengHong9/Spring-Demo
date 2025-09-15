@@ -1,6 +1,7 @@
 package org.example.damo.controller;
 
 
+import jakarta.validation.Valid;
 import org.example.damo.dto.stock.StockDto;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -23,12 +24,12 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponeModel> createStock(@RequestBody StockDto payload) {
+    public ResponseEntity<BaseResponeModel> createStock(@Valid @RequestBody StockDto payload) {
         return stockService.createStock(payload);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<BaseResponeModel> updateStockQuantity(@RequestBody UpdateStockDto payload, @PathVariable("id") Long stockId) {
+    public ResponseEntity<BaseResponeModel> updateStockQuantity(@Valid @RequestBody UpdateStockDto payload, @PathVariable("id") Long stockId) {
         return stockService.adjustQuantity(stockId, payload);
     }
 

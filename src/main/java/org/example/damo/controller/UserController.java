@@ -1,5 +1,6 @@
 package org.example.damo.controller;
 
+import jakarta.validation.Valid;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.example.damo.dto.user.UserDto;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<BaseResponeModel> createUserData(@RequestBody UserDto payload) {
+    public ResponseEntity<BaseResponeModel> createUserData(@Valid @RequestBody UserDto payload) {
         return userService.createUser(payload);
     }
 

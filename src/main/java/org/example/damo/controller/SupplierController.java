@@ -1,6 +1,7 @@
 package org.example.damo.controller;
 
 
+import jakarta.validation.Valid;
 import org.example.damo.dto.supplier.SupplierDto;
 import org.example.damo.dto.supplier.UpdateSupplierDto;
 import org.example.damo.model.BaseResponeModel;
@@ -24,12 +25,12 @@ public class SupplierController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponeModel> createSupplier(@RequestBody SupplierDto supplierDto) {
+    public ResponseEntity<BaseResponeModel> createSupplier(@Valid @RequestBody SupplierDto supplierDto) {
         return supplierService.addSupplier(supplierDto);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseResponeModel> updateSupplier(@PathVariable Long id, @RequestBody UpdateSupplierDto payload) {
+    public ResponseEntity<BaseResponeModel> updateSupplier( @PathVariable Long id, @Valid @RequestBody UpdateSupplierDto payload) {
         return supplierService.updateSupplierById(id , payload);
     }
 

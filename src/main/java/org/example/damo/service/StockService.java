@@ -4,6 +4,7 @@ import org.example.damo.dto.stock.StockDto;
 import org.example.damo.entity.Product;
 import org.example.damo.entity.Stock;
 import org.example.damo.entity.Supplier;
+import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.StockMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -38,13 +39,10 @@ public class StockService {
 
 
     public ResponseEntity<BaseResponeModel> createStock(StockDto stock) {
-        Optional<Product> existingProduct = productRepository.findById(stock.getProductId());
+        Product existingProduct = productRepository.findById(stock.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("product not found with id: " + stock.getProductId()));
 
-        if(existingProduct.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("fail", "product not found : "+stock.getProductId()));
-        }
-
-        Stock stockEntity = stockMapper.toEntity(stock,existingProduct.get());
+        Stock stockEntity = stockMapper.toEntity(stock , existingProduct);
 
         stockRepository.save(stockEntity);
 
@@ -53,45 +51,44 @@ public class StockService {
 
     public ResponseEntity<BaseResponseWithAdditionalDateModel> getStockById(Long stockId){
 
-        Optional<Stock> stock = stockRepository.findById(stockId);
-        if(stock.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponseWithAdditionalDateModel("fail" , "stock not found with id : "+stockId,null));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "stock found" , stock.get()));
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new ResourceNotFoundException("stock not found with id: " + stockId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "stock found" , stockId));
     }
 
 
     public ResponseEntity<BaseResponeModel> adjustQuantity(Long stockId, UpdateStockDto updateStock) {
-        Optional<Stock> existingStock = stockRepository.findById(stockId);
 
         //stock not found in DB
-        if (existingStock.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("error", "stock not found id : " + stockId));
-        }
+        Stock existingStock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new ResourceNotFoundException("stock not found with id: " + stockId));
 
-        Stock stock = existingStock.get();
+
+
+
 
         if (updateStock.getOperationType() == 1){
-            int newQuantity = stock.getQuantity() + updateStock.getQuantity();
-            stock.setQuantity(newQuantity);
+            int newQuantity = existingStock.getQuantity() + updateStock.getQuantity();
+            existingStock.setQuantity(newQuantity);
         } else if (updateStock.getOperationType() == 2) {
-            if (stock.getQuantity() < updateStock.getQuantity()){
+            if (existingStock.getQuantity() < updateStock.getQuantity()){
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new BaseResponeModel("fail", "quantity to remove can not be exceeded than existing stock"));
             }
-            int newQuantity = stock.getQuantity() - updateStock.getQuantity();
-            stock.setQuantity(newQuantity);
+            int newQuantity = existingStock.getQuantity() - updateStock.getQuantity();
+            existingStock.setQuantity(newQuantity);
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponeModel("fail", "Invalid operation type "));
         }
 
-        stockRepository.save(stock);
+        stockRepository.save(existingStock);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success" , "successfully updated quantity"));
     }
 
 
     public ResponseEntity<BaseResponeModel> deleteStock(Long stockId) {
         if (!stockRepository.existsById(stockId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponeModel("fail", "stock not found id : " + stockId));
+            throw new ResourceNotFoundException("stock not found with id: " + stockId);
         }
         stockRepository.deleteById(stockId);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success", "successfully deleted stock"));

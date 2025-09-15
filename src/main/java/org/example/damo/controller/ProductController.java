@@ -1,12 +1,14 @@
 package org.example.damo.controller;
 
 
+import jakarta.validation.Valid;
 import org.example.damo.dto.product.ProductDto;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.example.damo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +36,7 @@ public class ProductController {
         return productService.searchProduct(name , maxPrice, minPrice);
     }
     @PostMapping
-    public ResponseEntity<BaseResponeModel> createProduct(@RequestBody ProductDto payload) {
+    public ResponseEntity<BaseResponeModel> createProduct(@Valid @RequestBody ProductDto payload) {
         return productService.createProduct(payload);
     }
 
