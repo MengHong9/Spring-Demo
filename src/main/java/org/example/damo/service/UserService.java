@@ -2,6 +2,7 @@ package org.example.damo.service;
 
 
 import org.example.damo.dto.user.UserResponseDto;
+import org.example.damo.dto.user.UserUpdateDto;
 import org.example.damo.entity.User;
 import org.example.damo.exception.model.DuplicateResourceException;
 import org.example.damo.exception.model.ResourceNotFoundException;
@@ -71,7 +72,7 @@ public class UserService {
 
 
 
-    public ResponseEntity<BaseResponeModel> updateUser(UserDto payload , Long userId){
+    public ResponseEntity<BaseResponeModel> updateUser(UserUpdateDto payload , Long userId){
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found with id: " + userId));
 

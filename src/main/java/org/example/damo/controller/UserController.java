@@ -1,6 +1,7 @@
 package org.example.damo.controller;
 
 import jakarta.validation.Valid;
+import org.example.damo.dto.user.UserUpdateDto;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.example.damo.dto.user.UserDto;
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PutMapping("/{user_id}")
-    public ResponseEntity<BaseResponeModel> updateUser(@PathVariable("user_id") Long userId, @RequestBody UserDto payload) {
+    public ResponseEntity<BaseResponeModel> updateUser(@PathVariable("user_id") Long userId, @RequestBody UserUpdateDto payload) {
         return userService.updateUser(payload , userId);
     }
 

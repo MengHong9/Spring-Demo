@@ -2,6 +2,7 @@ package org.example.damo.mapper;
 
 import org.example.damo.dto.user.UserDto;
 import org.example.damo.dto.user.UserResponseDto;
+import org.example.damo.dto.user.UserUpdateDto;
 import org.example.damo.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -50,16 +51,13 @@ public class UserMapper {
     }
 
 
-    public void  updateEntityFromDto(User entity , UserDto dto) {
+    public void  updateEntityFromDto(User entity , UserUpdateDto dto) {
         if (entity == null || dto == null) {
             return;
         }
         entity.setName(dto.getName());
-        entity.setPassword(dto.getPassword());
-        entity.setEmail(dto.getEmail());
         entity.setAddress(dto.getAddress());
         entity.setRole(dto.getRole());
-        entity.setAge(dto.getAge());
     }
 
 }
