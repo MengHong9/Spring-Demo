@@ -1,6 +1,7 @@
 package org.example.damo.controller;
 
 import jakarta.validation.Valid;
+import org.example.damo.dto.user.ChangePasswordUserDto;
 import org.example.damo.dto.user.UserUpdateDto;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -43,6 +44,11 @@ public class UserController {
     @DeleteMapping("/{user_id}")
     public ResponseEntity<BaseResponeModel> deleteUser(@PathVariable("user_id") Long userId) {
         return userService.deleteUser(userId);
+    }
+
+    @PatchMapping("/{user_id}/change-password")
+    public ResponseEntity<BaseResponeModel> checkPassword(@PathVariable("user_id") Long userId, @RequestBody ChangePasswordUserDto payload) {
+        return userService.changePassword(userId, payload);
     }
 
 }

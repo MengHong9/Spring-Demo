@@ -60,4 +60,9 @@ public class UserMapper {
         entity.setRole(dto.getRole());
     }
 
+
+    public void updateEntityChangePassword(User entity , String newPassword) {
+        entity.setPassword(newPassword);
+    }
+
 }

@@ -2,6 +2,8 @@ package org.example.damo.dto.user;
 
 
 import jakarta.validation.constraints.*;
+import org.example.damo.common.annotation.ValidEnum;
+import org.example.damo.common.enums.Role;
 
 
 public class UserDto {
@@ -31,6 +33,8 @@ public class UserDto {
     @Email(message = "email must be valid")
     private String email;
 
+
+    @ValidEnum(enumClass = Role.class , message = "Role must be in (USER,ADMIN)")
     private String role="USER";
 
     public String getPassword() {

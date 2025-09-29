@@ -1,6 +1,8 @@
 package org.example.damo.dto.user;
 
 import jakarta.validation.constraints.*;
+import org.example.damo.common.annotation.ValidEnum;
+import org.example.damo.common.enums.Role;
 
 public class UserUpdateDto {
     @NotBlank(message = "name must be no empty")
@@ -37,5 +39,8 @@ public class UserUpdateDto {
         this.role = role;
     }
 
-    private String role="USER";
+
+    @NotNull(message = "role is required")
+    @ValidEnum(enumClass = Role.class , message = "Role must be in (USER,ADMIN)")
+    private String role;
 }

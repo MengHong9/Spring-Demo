@@ -1,6 +1,7 @@
 package org.example.damo.service;
 
 
+import org.example.damo.dto.user.ChangePasswordUserDto;
 import org.example.damo.dto.user.UserResponseDto;
 import org.example.damo.dto.user.UserUpdateDto;
 import org.example.damo.entity.User;
@@ -16,9 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -91,5 +94,26 @@ public class UserService {
 
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "get user successfully with id : "+user_id , existingUser));
+    }
+
+    public ResponseEntity<BaseResponeModel> changePassword( Long userId , ChangePasswordUserDto payload) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with id : " + userId));
+
+
+        //old password is incorrect
+        if (!Objects.equals(user.getPassword(), payload.getOldPassword())){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new BaseResponeModel("fail" , "old password is incorrect"));
+        }
+
+        //new password and confirm password not match
+        if (!Objects.equals(payload.getNewPassword(), payload.getConfirmPassword())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponeModel("fail" , "new password and confirm password must be the same"));
+        }
+
+        mapper.updateEntityChangePassword(user , payload.getNewPassword());
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success" , "successfully changed password"));
     }
 }
