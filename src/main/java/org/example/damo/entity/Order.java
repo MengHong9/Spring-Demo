@@ -67,4 +67,14 @@ public class Order {
     @OneToMany(mappedBy = "order" , cascade = CascadeType.ALL)
     private List<OrderItem> items;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }

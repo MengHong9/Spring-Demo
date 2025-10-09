@@ -1,5 +1,6 @@
 package org.example.damo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -21,13 +22,7 @@ public class OrderItem {
         this.productId = productId;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
     public Order getOrder() {
         return order;
@@ -47,8 +42,16 @@ public class OrderItem {
     @Column(name = "qty")
     private Integer quantity;
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 
     @ManyToOne
     @JoinColumn(name = "order_id" , nullable = false)
+    @JsonIgnore
     private Order order;
 }

@@ -24,11 +24,12 @@ public class OrderItemResponseDto {
         this.productName = productName;
     }
 
-    public Long getPurchaseAmount() {
+
+    public Integer getPurchaseAmount() {
         return purchaseAmount;
     }
 
-    public void setPurchaseAmount(Long purchaseAmount) {
+    public void setPurchaseAmount(Integer purchaseAmount) {
         this.purchaseAmount = purchaseAmount;
     }
 
@@ -45,7 +46,7 @@ public class OrderItemResponseDto {
 
 
     @JsonProperty("purchase_amount")
-    private Long purchaseAmount;
+    private Integer purchaseAmount;
 
 
     @JsonProperty("unit_price")
