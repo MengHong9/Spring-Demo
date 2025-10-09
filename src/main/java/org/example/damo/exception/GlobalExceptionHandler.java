@@ -2,6 +2,7 @@ package org.example.damo.exception;
 
 import org.example.damo.exception.model.DuplicateResourceException;
 import org.example.damo.exception.model.ResourceNotFoundException;
+import org.example.damo.exception.model.UnprocessableEntityException;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BaseResponeModel("fail" , "something went wrong ! " + e.getMessage()));
     }
 
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ResponseEntity<BaseResponeModel> handleUnprocessableEntityException(UnprocessableEntityException e){
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new BaseResponeModel("fail" , e.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponseWithAdditionalDateModel> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String,String> errors = new HashMap();
@@ -47,6 +53,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponseWithAdditionalDateModel("fail","validation failed",errors));
     }
+
+
 
 
 }

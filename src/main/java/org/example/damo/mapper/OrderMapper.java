@@ -49,12 +49,7 @@ public class OrderMapper {
 
 
             // map for total price
-            Double total = orderItemDtos
-                    .stream()
-                    .mapToDouble(orderItemResponseDto -> {
-                        return orderItemResponseDto.getPurchaseAmount() * orderItemResponseDto.getUnitPrice();
-                    } )
-                    .sum();
+            Double total = calculateTotalPrice(orderItemDtos);
 
             dto.setTotal(total);
         }
@@ -74,6 +69,15 @@ public class OrderMapper {
         if (dto == null || entity == null) return;
 
         entity.setStatus(dto.getStatus());
+    }
+
+    private Double calculateTotalPrice(List<OrderItemResponseDto> items) {
+        return items
+                .stream()
+                .mapToDouble(orderItemResponseDto -> {
+                    return orderItemResponseDto.getPurchaseAmount() * orderItemResponseDto.getUnitPrice();
+                } )
+                .sum();
     }
 
 }

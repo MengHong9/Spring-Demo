@@ -9,6 +9,7 @@ import org.example.damo.entity.Order;
 import org.example.damo.entity.OrderItem;
 import org.example.damo.entity.Stock;
 import org.example.damo.exception.model.ResourceNotFoundException;
+import org.example.damo.exception.model.UnprocessableEntityException;
 import org.example.damo.mapper.OrderMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -98,7 +99,7 @@ public class OrderService {
 
             // not enough qty for sale
             if(remain > 0) {
-                throw new RuntimeException("Not enough stock for product id " + productId);
+                throw new UnprocessableEntityException("Not enough stock for product id : " + productId);
             }
         }
 
