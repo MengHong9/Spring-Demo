@@ -1,9 +1,9 @@
 package org.example.damo.service;
 
+
 import org.example.damo.dto.stock.StockDto;
 import org.example.damo.entity.Product;
 import org.example.damo.entity.Stock;
-import org.example.damo.entity.Supplier;
 import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.StockMapper;
 import org.example.damo.model.BaseResponeModel;
@@ -17,10 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class StockService {
+
     @Autowired
     private StockRepository stockRepository;
 
@@ -32,7 +33,10 @@ public class StockService {
 
 
     public ResponseEntity<BaseResponseWithAdditionalDateModel> getStock(){
+
+
         List<Stock> stocks = stockRepository.findAll();
+
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success", "successfully retrieved stocks", stockMapper.toStockResponseDtoList(stocks)));
     }

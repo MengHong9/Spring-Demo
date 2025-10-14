@@ -5,7 +5,6 @@ import org.example.damo.dto.base.Response;
 import org.example.damo.dto.order.OrderDto;
 import org.example.damo.dto.order.OrderResponseDto;
 import org.example.damo.dto.order.OrderUpdateDto;
-import org.example.damo.model.BaseResponeModel;
 import org.example.damo.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
