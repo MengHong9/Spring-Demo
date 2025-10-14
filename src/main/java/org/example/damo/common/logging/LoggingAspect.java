@@ -3,18 +3,20 @@ package org.example.damo.common.logging;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.example.damo.common.constant.RequestConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
+
 
 @Aspect
 @Component
+@Order(2)
 public class LoggingAspect {
-
-    String LOG_FORMAT = "%s | className = %s , method = %s";
 
     @Autowired
     LogFormatter logFormatter;
@@ -25,7 +27,7 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getSimpleName();
         Long startTime = System.currentTimeMillis();
-        String requestId = UUID.randomUUID().toString();
+        String requestId = MDC.get(RequestConstant.REQUEST_ID);
 
 
         log.info(logFormatter.logRequest( requestId, className , methodName , startTime));
@@ -52,7 +54,7 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String target = joinPoint.getTarget().getClass().getSimpleName();
         Long startTime = System.currentTimeMillis();
-        String requestId = UUID.randomUUID().toString();
+        String requestId = MDC.get(RequestConstant.REQUEST_ID);
 
         log.info(logFormatter.logRequest( requestId, target , methodName , startTime));
 
@@ -76,7 +78,7 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String target = joinPoint.getTarget().getClass().getSimpleName();
         Long startTime = System.currentTimeMillis();
-        String requestId = UUID.randomUUID().toString();
+        String requestId = MDC.get(RequestConstant.REQUEST_ID);
 
         log.info(logFormatter.logRequest(requestId, target , methodName , startTime));
 
