@@ -1,5 +1,6 @@
 package org.example.damo.common.logging;
 
+import org.example.damo.common.constant.LoggingConstant;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -8,7 +9,7 @@ public class LogFormatter {
 
     public String logRequest(String requestId , String target, String method, Long startTime) {
         return String.format(LOG_FORMAT,
-                "REQUEST",
+                LoggingConstant.REQUEST,
                 requestId,
                 target,
                 method,
@@ -20,7 +21,7 @@ public class LogFormatter {
 
     public String logResponse(String requestId , String target, String method, Long startTime , Long endTime) {
         return String.format(LOG_FORMAT,
-                "RESPONSE",
+                LoggingConstant.RESPONSE,
                 requestId,
                 target,
                 method,
@@ -33,7 +34,7 @@ public class LogFormatter {
 
     public String logError(String requestId , String target, String method, Long startTime , Long endTime) {
         return String.format(LOG_FORMAT,
-                "Error",
+                LoggingConstant.ERROR,
                 requestId,
                 target,
                 method,
