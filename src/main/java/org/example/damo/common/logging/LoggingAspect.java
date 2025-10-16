@@ -28,21 +28,23 @@ public class LoggingAspect {
         String className = joinPoint.getTarget().getClass().getSimpleName();
         Long startTime = System.currentTimeMillis();
         String requestId = MDC.get(RequestConstant.REQUEST_ID);
+        String httpMethod = MDC.get(RequestConstant.HTTP_METHOD);
+        String requestPath = MDC.get(RequestConstant.REQUEST_PATH);
 
 
-        log.info(logFormatter.logRequest( requestId, className , methodName , startTime));
+        log.info(logFormatter.logRequest( requestId, className , methodName  , httpMethod , requestPath , startTime));
 
         try{
             // execute the original method logic
             Object result = joinPoint.proceed();
             Long endTime = System.currentTimeMillis();
 
-            log.info(logFormatter.logResponse(requestId , className , methodName , startTime , endTime));
+            log.info(logFormatter.logResponse(requestId , className , methodName  , httpMethod , requestPath , startTime , endTime));
 
             return result;
         }catch (Exception e){
             Long endTime = System.currentTimeMillis();
-            log.info(logFormatter.logError(requestId , className , methodName , startTime , endTime));
+            log.info(logFormatter.logError(requestId , className , methodName  , httpMethod , requestPath , startTime , endTime ));
             throw e;
         }
 
@@ -55,18 +57,20 @@ public class LoggingAspect {
         String target = joinPoint.getTarget().getClass().getSimpleName();
         Long startTime = System.currentTimeMillis();
         String requestId = MDC.get(RequestConstant.REQUEST_ID);
+        String httpMethod = MDC.get(RequestConstant.HTTP_METHOD);
+        String requestPath = MDC.get(RequestConstant.REQUEST_PATH);
 
-        log.info(logFormatter.logRequest( requestId, target , methodName , startTime));
+        log.info(logFormatter.logRequest( requestId, target , methodName , httpMethod , requestPath , startTime));
 
         try {
             Object result = joinPoint.proceed();
             Long endTime = System.currentTimeMillis();
 
-            log.info(logFormatter.logResponse(requestId , target , methodName , startTime , endTime));
+            log.info(logFormatter.logResponse(requestId , target , methodName  , httpMethod , requestPath , startTime , endTime));
             return result;
         }catch (Exception e){
             Long endTime = System.currentTimeMillis();
-            log.error(logFormatter.logError(requestId , target , methodName , startTime , endTime));
+            log.error(logFormatter.logError(requestId , target , methodName  , httpMethod , requestPath , startTime , endTime));
             throw e;
         }
     }
@@ -79,19 +83,21 @@ public class LoggingAspect {
         String target = joinPoint.getTarget().getClass().getSimpleName();
         Long startTime = System.currentTimeMillis();
         String requestId = MDC.get(RequestConstant.REQUEST_ID);
+        String httpMethod = MDC.get(RequestConstant.HTTP_METHOD);
+        String requestPath = MDC.get(RequestConstant.REQUEST_PATH);
 
-        log.info(logFormatter.logRequest(requestId, target , methodName , startTime));
+        log.info(logFormatter.logRequest(requestId, target , methodName  , httpMethod , requestPath , startTime));
 
         try {
             Object result = joinPoint.proceed();
             Long endTime = System.currentTimeMillis();
 
-            log.info(logFormatter.logResponse(requestId , target , methodName , startTime , endTime));
+            log.info(logFormatter.logResponse(requestId , target , methodName  , httpMethod , requestPath , startTime , endTime));
 
             return result;
         }catch (Exception e){
             Long endTime = System.currentTimeMillis();
-            log.error(logFormatter.logError(requestId , target , methodName , startTime , endTime));
+            log.error(logFormatter.logError(requestId , target , methodName  , httpMethod , requestPath , startTime , endTime));
             throw e;
         }
     }

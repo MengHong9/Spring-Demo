@@ -12,13 +12,7 @@ public class Stock {
     private Long id;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Integer quantity ;
 
     public Integer getQuantity() {
         return quantity;
@@ -28,6 +22,16 @@ public class Stock {
         this.quantity = quantity;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -36,7 +40,7 @@ public class Stock {
         this.createdAt = createdAt;
     }
 
-    private Integer quantity;
+
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -47,6 +51,14 @@ public class Stock {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 
     public Product getProduct() {

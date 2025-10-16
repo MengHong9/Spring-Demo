@@ -59,7 +59,11 @@ public class Product {
     @Transient
     public Long getTotalStocks() {
         if(stocks == null) return 0L;
-        return stocks.stream().mapToLong(stock -> stock.getQuantity()).sum();
+//        return stocks.stream().mapToLong(stock -> stock.getQuantity()).sum();
+        return stocks.stream()
+                .filter(stock -> stock.getQuantity() != null)
+                .mapToLong(Stock::getQuantity)
+                .sum();
     }
 
     public List<Stock> getStocks() {
