@@ -1,6 +1,7 @@
 package org.example.damo.service;
 
 
+import org.example.damo.dto.auth.AuthDto;
 import org.example.damo.dto.user.ChangePasswordUserDto;
 import org.example.damo.dto.user.UserResponseDto;
 import org.example.damo.dto.user.UserUpdateDto;
@@ -15,22 +16,26 @@ import org.example.damo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    UserMapper mapper;
+    private UserMapper mapper;
+
 
 
 
@@ -41,26 +46,6 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieve user" , dtos));
     }
 
-
-    public ResponseEntity<BaseResponeModel> createUser(UserDto payload){
-
-        if (userRepository.existsByName(payload.getName())){
-            throw new DuplicateResourceException("user already exists with name : " + payload.getName());
-        }
-
-
-        if(userRepository.existsByEmail(payload.getEmail())){
-            throw new DuplicateResourceException("user already exists with email : " + payload.getEmail());
-        }
-
-        User user = mapper.toEntity(payload);
-
-        userRepository.save(user);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new BaseResponeModel("success" , "successfully created user"));
-    }
 
 
     public ResponseEntity<BaseResponeModel> deleteUser(Long userId){
@@ -88,9 +73,11 @@ public class UserService {
                 .body(new BaseResponeModel("success" , "successfully updated user"));
     }
 
-    public ResponseEntity<BaseResponseWithAdditionalDateModel> getOneUser(@PathVariable("user_id") Long user_id) {
+    public ResponseEntity<BaseResponseWithAdditionalDateModel> getOneUser(Long user_id) {
+
         User existingUser = userRepository.findById(user_id)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found with id: " + user_id));
+
 
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "get user successfully with id : "+user_id , existingUser));
@@ -115,5 +102,16 @@ public class UserService {
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success" , "successfully changed password"));
+    }
+
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByName(username)
+                .orElseThrow(() -> {
+                    throw new UsernameNotFoundException("user not found with username : " + username);
+
+                });
     }
 }
