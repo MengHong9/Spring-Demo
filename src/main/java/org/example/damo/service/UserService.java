@@ -1,17 +1,15 @@
 package org.example.damo.service;
 
 
-import org.example.damo.dto.auth.AuthDto;
+
 import org.example.damo.dto.user.ChangePasswordUserDto;
 import org.example.damo.dto.user.UserResponseDto;
 import org.example.damo.dto.user.UserUpdateDto;
 import org.example.damo.entity.User;
-import org.example.damo.exception.model.DuplicateResourceException;
 import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.UserMapper;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
-import org.example.damo.dto.user.UserDto;
 import org.example.damo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 

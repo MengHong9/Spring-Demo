@@ -1,6 +1,8 @@
 package org.example.damo.controller;
 
 import jakarta.validation.Valid;
+import org.example.damo.dto.auth.AuthDto;
+import org.example.damo.dto.auth.AuthResponseDto;
 import org.example.damo.dto.base.Response;
 import org.example.damo.dto.user.UserDto;
 import org.example.damo.service.security.AuthService;
@@ -21,8 +23,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Response> register(@Valid @RequestBody UserDto payload) {
-       String token = authService.register(payload);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Response.success("201" , "success" , token));
+       AuthResponseDto dto = authService.register(payload);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Response.success("201" , "success" , "successfully registered user" , dto));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Response> login( @RequestBody AuthDto payload) {
+        AuthResponseDto dto = authService.login(payload);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully logged" , dto));
+
     }
 
 }
