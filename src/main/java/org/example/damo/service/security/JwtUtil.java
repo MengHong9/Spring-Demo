@@ -1,6 +1,7 @@
 package org.example.damo.service.security;
 
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -13,6 +14,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class JwtUtil {
@@ -44,5 +46,39 @@ public class JwtUtil {
                 .compact();
 
         return tok;
+    }
+
+
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        Boolean isExpired = this.extractExpiration(token).before(new Date());
+        String username = this.extractUsername(token);
+
+        return !isExpired && username.equals(userDetails.getUsername());
+    }
+
+
+    public Date extractExpiration(String token) {
+        return this.extractClaim(token, Claims::getExpiration);
+    }
+
+    public String extractUsername(String token) {
+        return this.extractClaim(token, Claims::getSubject);
+    }
+
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        Claims claims = this.extractAllClaims(token);
+
+        return claimsResolver.apply(claims);
+    }
+
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(this.getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
     }
 }

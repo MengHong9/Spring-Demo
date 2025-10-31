@@ -14,6 +14,7 @@ spring:
 config:
   security:
     secret: 95fb0a7b70e8e854d4f8bdbd2f1ef754b58866345824ae466813c8e2d9a9ce35
-    expiration: 3600000 #ms
+    # expiration: 3600000 #ms
+    expiration: 20000
 
 
