@@ -55,12 +55,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz ->
-                        authz.requestMatchers("/api/v1/auth/**")
-                                .permitAll()
+                        authz.requestMatchers("/api/v1/auth/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-        .authenticationManager(this.authenticationManager(http))
+                .authenticationManager(this.authenticationManager(http))
                 .addFilterBefore(jwtAuthenticationFilter , UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
