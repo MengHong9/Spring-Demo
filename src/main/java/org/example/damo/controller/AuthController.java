@@ -3,6 +3,8 @@ package org.example.damo.controller;
 import jakarta.validation.Valid;
 import org.example.damo.dto.auth.AuthDto;
 import org.example.damo.dto.auth.AuthResponseDto;
+import org.example.damo.dto.auth.RefreshTokenDto;
+import org.example.damo.dto.auth.RefreshTokenResponseDto;
 import org.example.damo.dto.base.Response;
 import org.example.damo.dto.user.UserDto;
 import org.example.damo.service.security.AuthService;
@@ -28,11 +30,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Response> login( @RequestBody AuthDto payload) {
+    public ResponseEntity<Response> login(@Valid @RequestBody AuthDto payload) {
         AuthResponseDto dto = authService.login(payload);
 
         return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully logged" , dto));
 
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Response> refresh(@Valid @RequestBody RefreshTokenDto payload) {
+
+        RefreshTokenResponseDto dto = authService.refreshToken(payload);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.success("200" , "success" , "successfully refreshed token" , dto));
     }
 
 }

@@ -2,7 +2,10 @@ package org.example.damo.service.security;
 
 import org.example.damo.dto.auth.AuthDto;
 import org.example.damo.dto.auth.AuthResponseDto;
+import org.example.damo.dto.auth.RefreshTokenDto;
+import org.example.damo.dto.auth.RefreshTokenResponseDto;
 import org.example.damo.dto.user.UserDto;
+import org.example.damo.entity.RefreshToken;
 import org.example.damo.entity.User;
 import org.example.damo.exception.model.DuplicateResourceException;
 import org.example.damo.mapper.UserMapper;
@@ -14,6 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.naming.AuthenticationException;
+
 
 @Service
 public class AuthService {
@@ -35,6 +41,9 @@ public class AuthService {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
 
 
@@ -65,6 +74,35 @@ public class AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(payload.getUsername());
         String accessToken = jwtUtil.generateToken(userDetails);
 
-        return new AuthResponseDto(accessToken , null);
+        // generate access token
+        User user = (User) userDetails;
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+        return new AuthResponseDto(accessToken , refreshToken.getToken());
+    }
+
+    public RefreshTokenResponseDto refreshToken(RefreshTokenDto payload)  {
+        String token = payload.getRefreshToken();
+
+
+        RefreshToken refreshToken = refreshTokenService.findByToken(token);
+        try {
+            refreshToken = refreshTokenService.verifyRefreshToken(refreshToken);
+        }catch (AuthenticationException e){
+            return null;
+        }
+
+
+
+        //get user from refresh token
+        User user = refreshToken.getUser();
+
+
+        //generate new access token
+        String newAccessToken = jwtUtil.generateToken(user);
+
+
+        RefreshToken newRefreshToken = refreshTokenService.rotateRefreshToken(refreshToken);
+
+        return new RefreshTokenResponseDto(newAccessToken , newRefreshToken.getToken() , "Bearer" );
     }
 }
