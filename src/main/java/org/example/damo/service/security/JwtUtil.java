@@ -5,7 +5,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.annotation.PostConstruct;
+import org.example.damo.common.config.ApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +21,20 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    @Value("${config.security.secret}")
+    @Autowired
+    private ApplicationConfiguration appConfig;
+
     private String secret;
 
-    @Value("${config.security.expiration}")
+
     private Long expiration;
+
+
+    @PostConstruct
+    private void init() {
+        secret = appConfig.getSecurity().getSecret();
+        expiration = appConfig.getSecurity().getRefreshTokenExpiration();
+    }
 
     private Key getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());

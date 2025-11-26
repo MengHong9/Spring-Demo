@@ -1,35 +1,44 @@
 package org.example.damo.service.security;
 
+import jakarta.annotation.PostConstruct;
+import org.example.damo.common.config.ApplicationConfiguration;
 import org.example.damo.entity.RefreshToken;
 import org.example.damo.entity.User;
 import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.UUID;
+
 
 @Service
 public class RefreshTokenService {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
-    @Value("${config.security.refresh-token-expiration}")
+    @Autowired
+    private ApplicationConfiguration appConfig;
+
+
     private Long expiration;
 
+    @PostConstruct
+    private void init() {
+        this.expiration = appConfig.getSecurity().getRefreshTokenExpiration();
+    }
+
+
     public RefreshToken createRefreshToken(User user) {
-
-
         String refreshToken = this.generateSecureRefreshToken();
 
         RefreshToken refreshTokenEntity = new RefreshToken();
         refreshTokenEntity.setToken(refreshToken);
-        refreshTokenEntity.setExpiresAt(LocalDateTime.now().plusHours(this.expiration));
+        refreshTokenEntity.setExpiresAt(LocalDateTime.now().plusHours(expiration));
         refreshTokenEntity.setUser(user);
 
         return refreshTokenRepository.save(refreshTokenEntity);
