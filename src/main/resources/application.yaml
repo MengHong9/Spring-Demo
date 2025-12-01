@@ -15,7 +15,7 @@ config:
   security:
     secret: 95fb0a7b70e8e854d4f8bdbd2f1ef754b58866345824ae466813c8e2d9a9ce35
     expiration: 3600000 #ms
-    refresh-token-expiration: 3 #hours
+    refresh-token-expiration: 10800000 # 3 hours = 10800000ms
 
 
 
