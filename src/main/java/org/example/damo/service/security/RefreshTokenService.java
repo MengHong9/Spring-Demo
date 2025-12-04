@@ -76,4 +76,9 @@ public class RefreshTokenService {
 
         return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
     }
+
+
+    public void deleteExpiredAndRevokeTokens() {
+        refreshTokenRepository.deleteExpiredAndRevokeTokens(LocalDateTime.now());
+    }
 }

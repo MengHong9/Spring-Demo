@@ -1,5 +1,6 @@
 package org.example.damo.exception;
 
+import org.example.damo.exception.model.CustomAuthenticationException;
 import org.example.damo.exception.model.DuplicateResourceException;
 import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.exception.model.UnprocessableEntityException;
@@ -52,6 +53,11 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponseWithAdditionalDateModel("fail","validation failed",errors));
+    }
+
+    @ExceptionHandler(CustomAuthenticationException.class)
+    public ResponseEntity<BaseResponeModel> handleAuthenticationException(CustomAuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseResponeModel("fail" , e.getMessage()));
     }
 
 

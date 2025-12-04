@@ -7,11 +7,13 @@ import org.example.damo.dto.auth.RefreshTokenResponseDto;
 import org.example.damo.dto.user.UserDto;
 import org.example.damo.entity.RefreshToken;
 import org.example.damo.entity.User;
+import org.example.damo.exception.model.CustomAuthenticationException;
 import org.example.damo.exception.model.DuplicateResourceException;
 import org.example.damo.mapper.UserMapper;
 import org.example.damo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -67,9 +69,16 @@ public class AuthService {
     }
 
     public AuthResponseDto login(AuthDto payload) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(payload.getUsername() , payload.getPassword())
-        );
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(payload.getUsername() , payload.getPassword())
+            );
+        }catch (BadCredentialsException e){
+            throw new CustomAuthenticationException("Invalid username or password");
+        }
+
+
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(payload.getUsername());
         String accessToken = jwtUtil.generateToken(userDetails);
@@ -88,7 +97,7 @@ public class AuthService {
         try {
             refreshToken = refreshTokenService.verifyRefreshToken(refreshToken);
         }catch (AuthenticationException e){
-            return null;
+            throw new CustomAuthenticationException("Invalid refresh token");
         }
 
 
