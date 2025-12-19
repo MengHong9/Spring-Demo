@@ -33,7 +33,7 @@ public class JwtUtil {
     @PostConstruct
     private void init() {
         secret = appConfig.getSecurity().getSecret();
-        expiration = appConfig.getSecurity().getRefreshTokenExpiration();
+        expiration = appConfig.getSecurity().getExpiration();
     }
 
     private Key getKey() {

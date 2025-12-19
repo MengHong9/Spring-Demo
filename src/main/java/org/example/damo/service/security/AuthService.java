@@ -79,7 +79,6 @@ public class AuthService {
         }
 
 
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(payload.getUsername());
         String accessToken = jwtUtil.generateToken(userDetails);
 

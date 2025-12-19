@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: damo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/myDB_staging
+    username: postgres
+    password: 412006
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+config:
+  security:
+    secret: 95fb0a7b70e8e854d4f8bdbd2f1ef754b58866345824ae466813c8e2d9a9ce35
+    expiration: 100000 #ms
+    refresh-token-expiration: 10800000 # 3 hours = 10800000ms
+
+
+
+
