@@ -2,6 +2,7 @@ package org.example.damo.controller;
 
 
 import jakarta.validation.Valid;
+import org.example.damo.dto.base.Response;
 import org.example.damo.dto.stock.StockDto;
 import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
@@ -19,27 +20,27 @@ public class StockController {
 
 
     @GetMapping
-    public ResponseEntity<BaseResponseWithAdditionalDateModel> listStocks() {
+    public ResponseEntity<Response> listStocks() {
         return stockService.getStock();
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponeModel> createStock(@Valid @RequestBody StockDto payload) {
+    public ResponseEntity<Response> createStock(@Valid @RequestBody StockDto payload) {
         return stockService.createStock(payload);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<BaseResponeModel> updateStockQuantity(@Valid @RequestBody UpdateStockDto payload, @PathVariable("id") Long stockId) {
+    public ResponseEntity<Response> updateStockQuantity(@Valid @RequestBody UpdateStockDto payload, @PathVariable("id") Long stockId) {
         return stockService.adjustQuantity(stockId, payload);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<BaseResponeModel> deleteStock(@PathVariable("id") Long stockId) {
+    public ResponseEntity<Response> deleteStock(@PathVariable("id") Long stockId) {
         return stockService.deleteStock(stockId);
     }
 
     @GetMapping("{stockId}")
-    public ResponseEntity<BaseResponseWithAdditionalDateModel> getStock(@PathVariable("stockId") Long id) {
+    public ResponseEntity<Response> getStock(@PathVariable("stockId") Long id) {
         return stockService.getStockById(id);
     }
 }

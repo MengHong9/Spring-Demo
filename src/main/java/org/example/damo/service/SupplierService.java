@@ -1,6 +1,7 @@
 package org.example.damo.service;
 
 
+import org.example.damo.dto.base.Response;
 import org.example.damo.dto.supplier.SupplierDto;
 import org.example.damo.dto.supplier.UpdateSupplierDto;
 import org.example.damo.entity.Supplier;
@@ -29,13 +30,13 @@ public class SupplierService {
     private SupplierMapper supplierMapper;
 
 
-    public ResponseEntity<BaseResponseWithAdditionalDateModel> getSupplier(){
+    public ResponseEntity<Response> getSupplier(){
         List<Supplier> suppliers = supplierRepository.findAll();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieve supplier" , supplierMapper.toDto(suppliers)));
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success" , "successfully retrieve supplier" , supplierMapper.toDto(suppliers)));
     }
 
-    public ResponseEntity<BaseResponeModel> addSupplier(SupplierDto supplierDto) {
+    public ResponseEntity<Response> addSupplier(SupplierDto supplierDto) {
         if (supplierRepository.existsByName(supplierDto.getName())) {
             throw new DuplicateResourceException("supplier already exists with name : " + supplierDto.getName());
         }
@@ -43,10 +44,10 @@ public class SupplierService {
         Supplier supplier = supplierMapper.toEntity(supplierDto);
 
         supplierRepository.save(supplier);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success", "successfully added supplier"));
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully added supplier"));
     }
 
-    public ResponseEntity<BaseResponeModel> updateSupplierById(Long id , UpdateSupplierDto dto) {
+    public ResponseEntity<Response> updateSupplierById(Long id , UpdateSupplierDto dto) {
         Supplier existingSupplier = supplierRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("supplier not found with id: " + id));
 
@@ -54,15 +55,15 @@ public class SupplierService {
         supplierMapper.updateSupplierFromDto(existingSupplier , dto);
         supplierRepository.save(existingSupplier);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success", "successfully updated supplier"));
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully updated supplier"));
     }
 
-    public ResponseEntity<BaseResponeModel> deleteSupplierById(Long id) {
+    public ResponseEntity<Response> deleteSupplierById(Long id) {
         if (!supplierRepository.existsById(id)) {
             throw new ResourceNotFoundException("supplier not found with id: " + id);
         }
 
         supplierRepository.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success", "successfully deleted supplier"));
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully deleted supplier"));
     }
 }

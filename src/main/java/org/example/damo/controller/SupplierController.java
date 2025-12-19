@@ -2,6 +2,7 @@ package org.example.damo.controller;
 
 
 import jakarta.validation.Valid;
+import org.example.damo.dto.base.Response;
 import org.example.damo.dto.supplier.SupplierDto;
 import org.example.damo.dto.supplier.UpdateSupplierDto;
 import org.example.damo.model.BaseResponeModel;
@@ -20,22 +21,22 @@ public class SupplierController {
 
 
     @GetMapping
-    public ResponseEntity<BaseResponseWithAdditionalDateModel> getSuppliers() {
+    public ResponseEntity<Response> getSuppliers() {
         return supplierService.getSupplier();
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponeModel> createSupplier(@Valid @RequestBody SupplierDto supplierDto) {
+    public ResponseEntity<Response> createSupplier(@Valid @RequestBody SupplierDto supplierDto) {
         return supplierService.addSupplier(supplierDto);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseResponeModel> updateSupplier( @PathVariable Long id, @Valid @RequestBody UpdateSupplierDto payload) {
+    public ResponseEntity<Response> updateSupplier( @PathVariable Long id, @Valid @RequestBody UpdateSupplierDto payload) {
         return supplierService.updateSupplierById(id , payload);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<BaseResponeModel> deleteSupplier(@PathVariable Long id) {
+    public ResponseEntity<Response> deleteSupplier(@PathVariable Long id) {
         return supplierService.deleteSupplierById(id);
     }
 
