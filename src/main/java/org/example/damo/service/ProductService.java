@@ -1,5 +1,6 @@
 package org.example.damo.service;
 
+import org.example.damo.common.config.ApplicationConfiguration;
 import org.example.damo.dto.base.PaginatedResponse;
 import org.example.damo.dto.base.Response;
 import org.example.damo.dto.product.ProductDto;
@@ -30,11 +31,14 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private ApplicationConfiguration appConfig;
+
     public PaginatedResponse getProductWithPagination(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
         Page<ProductResponseDto> productPageDto = productPage.map(product -> productMapper.toDto(product));
 
-        return PaginatedResponse.from(productPageDto , "/http://localhost:8080/api/v1/products/paginated");
+        return PaginatedResponse.from(productPageDto , appConfig.getPagination().getUrlByResource("product"));
     }
 
 

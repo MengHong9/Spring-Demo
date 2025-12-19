@@ -4,12 +4,14 @@ package org.example.damo.common.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
 
 
 @Configuration
 @ConfigurationProperties(prefix = "config")
 public class ApplicationConfiguration {
     private Security security;
+    private Pagination pagination;
 
     public Security getSecurity() {
         return security;
@@ -18,6 +20,14 @@ public class ApplicationConfiguration {
     public void setSecurity(Security security) {
         this.security = security;
     }
+
+    public Pagination getPagination() {
+        return pagination;
+    }
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
+    }
+
 
 
     public static class Security {
@@ -42,6 +52,33 @@ public class ApplicationConfiguration {
         }
         public void setRefreshTokenExpiration(Long refreshTokenExpiration) {
             this.refreshTokenExpiration = refreshTokenExpiration;
+        }
+    }
+
+
+
+    public static class Pagination {
+        private String baseUrl;
+        private HashMap<String , String> uri;
+
+        public String getBaseUrl() {
+            return baseUrl;
+        }
+        public void setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
+        }
+        public HashMap<String , String> getUri() {
+            return uri;
+        }
+        public void setUri(HashMap<String , String> uri) {
+            this.uri = uri;
+        }
+
+
+
+
+        public String getUrlByResource(String resource) {
+            return baseUrl.concat(uri.getOrDefault(resource, ""));
         }
     }
 }
