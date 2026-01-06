@@ -12,6 +12,7 @@ import org.example.damo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class ProductController {
 
 
     @GetMapping("/paginated")
-    public ResponseEntity<Response> ListProductsWithPagination(@PageableDefault(size = 10 , page = 0) Pageable pageable){
+    public ResponseEntity<Response> ListProductsWithPagination(@PageableDefault(size = 10 , page = 0 , sort = "id" , direction = Sort.Direction.DESC) Pageable pageable){
         PaginatedResponse<ProductResponseDto> products = productService.getProductWithPagination(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully retrieve product with pagination" , products));

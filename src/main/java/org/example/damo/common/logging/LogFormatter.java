@@ -1,6 +1,7 @@
 package org.example.damo.common.logging;
 
 import org.example.damo.common.constant.LoggingConstant;
+
 import org.springframework.stereotype.Component;
 
 @Component

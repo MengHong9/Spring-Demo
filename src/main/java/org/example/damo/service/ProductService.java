@@ -103,7 +103,7 @@ public class ProductService {
     public ResponseEntity<Response> searchProduct(String name , Double maxPrice , Double  minPrice) {
 
         String formatedName = name != null ? name.toLowerCase() : null;
-        List<Product> product = productRepository.findProductwithFilter(formatedName , maxPrice , minPrice);
+        List<Product> product = productRepository.findProductWithFilter(formatedName , maxPrice , minPrice);
         return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success" , "successfully retrieved product!" , product));
     }
 }
