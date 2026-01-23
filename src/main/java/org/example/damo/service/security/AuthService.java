@@ -65,7 +65,10 @@ public class AuthService {
         User createdUser = userRepository.save(user);
         String accessToken = jwtUtil.generateToken(createdUser);
 
-        return new AuthResponseDto(accessToken , null);
+
+        UserDetails userDetails = user;
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+        return new AuthResponseDto(accessToken , refreshToken.getToken());
     }
 
     public AuthResponseDto login(AuthDto payload) {
