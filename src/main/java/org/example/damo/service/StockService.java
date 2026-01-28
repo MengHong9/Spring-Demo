@@ -3,9 +3,11 @@ package org.example.damo.service;
 
 import org.example.damo.dto.base.Response;
 import org.example.damo.dto.stock.StockDto;
+import org.example.damo.dto.stock.StockResponseDto;
 import org.example.damo.entity.Product;
 import org.example.damo.entity.Stock;
 import org.example.damo.exception.model.ResourceNotFoundException;
+import org.example.damo.exception.model.UnprocessableEntityException;
 import org.example.damo.mapper.StockMapper;
 
 import org.example.damo.dto.stock.UpdateStockDto;
@@ -32,16 +34,16 @@ public class StockService {
     private StockMapper stockMapper;
 
 
-    public ResponseEntity<Response> getStock(){
+    public List<StockResponseDto> getStock(){
 
         List<Stock> stocks = stockRepository.findAll();
+        return stockMapper.toStockResponseDtoList(stocks);
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully retrieved stocks", stockMapper.toStockResponseDtoList(stocks)));
     }
 
 
-    public ResponseEntity<Response> createStock(StockDto stock) {
+    public void createStock(StockDto stock) {
         Product existingProduct = productRepository.findById(stock.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("product not found with id: " + stock.getProductId()));
 
@@ -49,19 +51,19 @@ public class StockService {
 
         stockRepository.save(stockEntity);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Response.success("201","success" , "successfully created stock"));
     }
 
-    public ResponseEntity<Response> getStockById(Long stockId){
+    public StockResponseDto getStockById(Long stockId){
 
         Stock stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new ResourceNotFoundException("stock not found with id: " + stockId));
 
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success" , "stock found" , stockId));
+        return stockMapper.toStockResponseDto(stock);
+
     }
 
 
-    public ResponseEntity<Response> adjustQuantity(Long stockId, UpdateStockDto updateStock) {
+    public void adjustQuantity(Long stockId, UpdateStockDto updateStock) {
 
         //stock not found in DB
         Stock existingStock = stockRepository.findById(stockId)
@@ -76,24 +78,23 @@ public class StockService {
             existingStock.setQuantity(newQuantity);
         } else if (updateStock.getOperationType() == 2) {
             if (existingStock.getQuantity() < updateStock.getQuantity()){
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Response.error("405","fail", "quantity to remove can not be exceeded than existing stock"));
+                throw new UnprocessableEntityException("quantity to remove can not be exceeded than existing stock: " + existingStock.getQuantity());
             }
             int newQuantity = existingStock.getQuantity() - updateStock.getQuantity();
             existingStock.setQuantity(newQuantity);
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.error("402","fail", "Invalid operation type "));
+            throw new IllegalArgumentException("invalid operation type");
         }
 
         stockRepository.save(existingStock);
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success" , "successfully updated quantity"));
+
     }
 
 
-    public ResponseEntity<Response> deleteStock(Long stockId) {
+    public void deleteStock(Long stockId) {
         if (!stockRepository.existsById(stockId)) {
             throw new ResourceNotFoundException("stock not found with id: " + stockId);
         }
         stockRepository.deleteById(stockId);
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully deleted stock"));
     }
 }
