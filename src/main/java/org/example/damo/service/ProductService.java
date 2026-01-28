@@ -13,6 +13,9 @@ import org.example.damo.model.BaseResponeModel;
 import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.example.damo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -42,15 +45,17 @@ public class ProductService {
     }
 
 
-    public ResponseEntity<Response> getProduct(){
+    @Cacheable(value = "products" , key = "'all'")
+    public List<ProductResponseDto> getProduct(){
         List<Product> products = productRepository.findAll();
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.success("200","success" , "successfully retrieved products" ,
-                productMapper.toDtoList(products)));
+
+        return productMapper.toDtoList(products);
     }
 
 
-    public ResponseEntity<Response> createProduct(@RequestBody ProductDto product) {
+
+    @CachePut(value = "products" , key = "#product.getName()")
+    public void createProduct(ProductDto product) {
 
         if(productRepository.existsByProductName(product.getName())) {
             throw new DuplicateResourceException("product already exists");
@@ -60,15 +65,14 @@ public class ProductService {
 
 
         productRepository.save(productEntity);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Response.success("2001","success" , "successfully created product"));
+
     }
 
-    public ResponseEntity<Response> updateProduct(Long id, ProductDto product) {
+
+    @CacheEvict(value = "products" , key = "#id")
+    public void updateProduct(Long id, ProductDto product) {
         Product existing = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("product not found with id " + id));
-
-
 
 
         existing.setProductName(product.getName());
@@ -79,24 +83,24 @@ public class ProductService {
         productRepository.save(existing);
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully updated product"));
     }
 
 
-    public ResponseEntity<Response> deleteProduct(Long id) {
+    public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new ResourceNotFoundException("product not found with id " + id);
         }
         productRepository.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully deleted product : " +id));
     }
 
-    public ResponseEntity<Response> getOneProduct(Long id) {
+
+    @Cacheable(value = "products" , key = "#id")
+    public ProductResponseDto getOneProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("product not found with id " + id));
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success" , "successfully retrieved product : " +id , product));
+        return productMapper.toDto(product);
     }
 
 

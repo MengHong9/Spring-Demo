@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @RestController
@@ -37,12 +38,14 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<Response> getProducts() {
-        return productService.getProduct();
+        List<ProductResponseDto> products = productService.getProduct();
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully retrieve product" , products));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Response> getOnlyProduct(@PathVariable("id") Long id) {
-        return productService.getOneProduct(id);
+        ProductResponseDto dto = productService.getOneProduct(id);
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully retrieve product " , dto));
     }
 
     @GetMapping("/search")
@@ -55,16 +58,22 @@ public class ProductController {
     }
     @PostMapping
     public ResponseEntity<Response> createProduct(@Valid @RequestBody ProductDto payload) {
-        return productService.createProduct(payload);
+        productService.createProduct(payload);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(Response.success("201" , "success" , "successfully add product "));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Response> updateProduct(@PathVariable Long id, @RequestBody ProductDto payload) {
-        return productService.updateProduct(id, payload);
+        productService.updateProduct(id, payload);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success( "success" , "successfully update product "));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Response> deleteProduct(@PathVariable Long id) {
-        return productService.deleteProduct(id);
+        productService.deleteProduct(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("success" , "successfully delete product "));
     }
 }
