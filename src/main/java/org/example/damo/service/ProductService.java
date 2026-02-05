@@ -37,6 +37,8 @@ public class ProductService {
     @Autowired
     private ApplicationConfiguration appConfig;
 
+
+    @Cacheable(value = "products-paginated" , key = "T(String).valueOf(#pageable.getPageNumber()).concat('-').concat(T(String).valueOf(#pageable.getPageSize()))")
     public PaginatedResponse getProductWithPagination(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
         Page<ProductResponseDto> productPageDto = productPage.map(product -> productMapper.toDto(product));
