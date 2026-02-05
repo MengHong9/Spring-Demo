@@ -16,6 +16,8 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class RedisConfig {
@@ -39,17 +41,33 @@ public class RedisConfig {
 
 
         // default configuration
-        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration
+        RedisCacheConfiguration defaultConfig = this.getRedisCacheConfig(50 , jackson2JsonRedisSerializer);
+
+
+
+        // pagination configuration
+        RedisCacheConfiguration paginatedConfig = getRedisCacheConfig(5 , jackson2JsonRedisSerializer);
+
+
+        // paginated cache 5minutes TTL
+        Map<String , RedisCacheConfiguration> paginationCacheConfigs = new HashMap<>();
+        paginationCacheConfigs.put("products-paginated" , paginatedConfig);
+
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(defaultConfig)
+                .withInitialCacheConfigurations(paginationCacheConfigs)
+                .build();
+    }
+
+
+    private RedisCacheConfiguration getRedisCacheConfig(Integer duration , GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer){
+        return RedisCacheConfiguration
                 .defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30))
+                .entryTtl(Duration.ofMinutes(5))
                 .computePrefixWith(cacheName -> cacheName + ":")
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer))
                 .disableCachingNullValues();
-
-        return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(defaultConfig)
-                .build();
     }
 
 
