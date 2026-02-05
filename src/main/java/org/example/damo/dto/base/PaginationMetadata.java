@@ -26,6 +26,10 @@ public class PaginationMetadata {
     private boolean hasPrevious;
     private Link links;
 
+    public PaginationMetadata(){
+        // default constructor (required by Jackson)
+    }
+
     public PaginationMetadata(int page, int size, long totalElements, int totalPages, boolean first, boolean last, boolean hasNext, boolean hasPrevious, Link links) {
         this.page = page;
         this.size = size;

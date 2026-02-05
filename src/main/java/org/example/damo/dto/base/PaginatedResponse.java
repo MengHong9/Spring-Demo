@@ -13,6 +13,11 @@ public class PaginatedResponse<T> {
     private PaginationMetadata pagination;
 
 
+    // default constructor (required by Jackson)
+    public PaginatedResponse(){
+
+    }
+
     public static <T> PaginatedResponse from(Page<T> page) {
         PaginationMetadata metadata = new PaginationMetadata(
                 page.getNumber(),
