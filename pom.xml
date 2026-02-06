@@ -33,6 +33,14 @@
     <dependencies>
 
 
+
+       <!-- WebClient dependency -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+
         <!-- Redis Cache Dependencies -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
