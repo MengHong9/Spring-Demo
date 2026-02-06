@@ -38,7 +38,7 @@ public class ProductService {
     private ApplicationConfiguration appConfig;
 
 
-    @Cacheable(value = "products-paginated" , key = "T(String).valueOf(#pageable.getPageNumber()).concat('-').concat(T(String).valueOf(#pageable.getPageSize()))")
+    @Cacheable(value = "products-paginated" , key = "T(org.example.damo.common.util.CacheKeyGenerator).generatePaginatedKey('products', #pageable)")
     public PaginatedResponse getProductWithPagination(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
         Page<ProductResponseDto> productPageDto = productPage.map(product -> productMapper.toDto(product));
