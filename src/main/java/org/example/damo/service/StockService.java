@@ -16,6 +16,9 @@ import org.example.damo.dto.stock.UpdateStockDto;
 import org.example.damo.repository.ProductRepository;
 import org.example.damo.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -49,6 +52,8 @@ public class StockService {
         return PaginatedResponse.from(stocksPageDtos , appConfig.getPagination().getUrlByResource("stock"));
     }
 
+
+    @Cacheable(value = "stocks" , key = "'all'")
     public List<StockResponseDto> getStock(){
 
         List<Stock> stocks = stockRepository.findAll();
@@ -56,6 +61,7 @@ public class StockService {
 
 
     }
+
 
 
     public void createStock(StockDto stock) {
@@ -68,6 +74,8 @@ public class StockService {
 
     }
 
+
+    @Cacheable(value = "stocks" , key = "#stockId")
     public StockResponseDto getStockById(Long stockId){
 
         Stock stock = stockRepository.findById(stockId)
@@ -78,14 +86,13 @@ public class StockService {
     }
 
 
+
+    @CacheEvict(value = "stocks" , key = "#stockId")
     public void adjustQuantity(Long stockId, UpdateStockDto updateStock) {
 
         //stock not found in DB
         Stock existingStock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new ResourceNotFoundException("stock not found with id: " + stockId));
-
-
-
 
 
         if (updateStock.getOperationType() == 1){
@@ -106,6 +113,8 @@ public class StockService {
     }
 
 
+
+    @CacheEvict(value = "stocks" , key = "#stockId")
     public void deleteStock(Long stockId) {
         if (!stockRepository.existsById(stockId)) {
             throw new ResourceNotFoundException("stock not found with id: " + stockId);
