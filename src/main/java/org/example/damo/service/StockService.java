@@ -1,6 +1,8 @@
 package org.example.damo.service;
 
 
+import org.example.damo.common.config.ApplicationConfiguration;
+import org.example.damo.dto.base.PaginatedResponse;
 import org.example.damo.dto.base.Response;
 import org.example.damo.dto.stock.StockDto;
 import org.example.damo.dto.stock.StockResponseDto;
@@ -14,6 +16,8 @@ import org.example.damo.dto.stock.UpdateStockDto;
 import org.example.damo.repository.ProductRepository;
 import org.example.damo.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,6 +37,17 @@ public class StockService {
     @Autowired
     private StockMapper stockMapper;
 
+
+    @Autowired
+    private ApplicationConfiguration appConfig;
+
+
+    public PaginatedResponse listStockByPagination(Pageable pageable){
+        Page<Stock> stocks = stockRepository.findAll(pageable);
+        Page<StockResponseDto> stocksPageDtos = stocks.map(stock -> stockMapper.toStockResponseDto(stock));
+
+        return PaginatedResponse.from(stocksPageDtos , appConfig.getPagination().getUrlByResource("stock"));
+    }
 
     public List<StockResponseDto> getStock(){
 

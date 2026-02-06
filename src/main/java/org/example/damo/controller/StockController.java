@@ -2,6 +2,7 @@ package org.example.damo.controller;
 
 
 import jakarta.validation.Valid;
+import org.example.damo.dto.base.PaginatedResponse;
 import org.example.damo.dto.base.Response;
 import org.example.damo.dto.stock.StockDto;
 import org.example.damo.dto.stock.StockResponseDto;
@@ -10,6 +11,8 @@ import org.example.damo.model.BaseResponseWithAdditionalDateModel;
 import org.example.damo.dto.stock.UpdateStockDto;
 import org.example.damo.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,14 @@ import java.util.List;
 public class StockController {
     @Autowired
     private StockService stockService;
+
+
+    @GetMapping("/paginated")
+    public ResponseEntity<Response> listStocksByPage(@PageableDefault(size = 10 , page = 0)Pageable pageable){
+        PaginatedResponse<StockResponseDto> stocks = stockService.listStockByPagination(pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully retrieved stocks by pagination" , stocks));
+    }
 
 
     @GetMapping
