@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class ApplicationConfiguration {
     private Security security;
     private Pagination pagination;
+    private JsonPlaceholder jsonPlaceholder;
 
     public Security getSecurity() {
         return security;
@@ -26,6 +27,13 @@ public class ApplicationConfiguration {
     }
     public void setPagination(Pagination pagination) {
         this.pagination = pagination;
+    }
+
+    public JsonPlaceholder getJsonPlaceholder(){
+        return jsonPlaceholder;
+    }
+    public void setJsonPlaceholder(JsonPlaceholder jsonPlaceholder){
+        this.jsonPlaceholder = jsonPlaceholder;
     }
 
 
@@ -81,4 +89,34 @@ public class ApplicationConfiguration {
             return baseUrl.concat(uri.getOrDefault(resource, ""));
         }
     }
+
+
+    public static class JsonPlaceholder {
+        private String baseUrl;
+        private HashMap<String , String> uri;
+
+        public String getBaseUrl(){
+            return baseUrl;
+        }
+        public void setBaseUrl(String baseUrl){
+            this.baseUrl = baseUrl;
+        }
+        public HashMap<String , String> getUri() {
+            return uri;
+        }
+        public void setUri(HashMap<String , String> uri) {
+            this.uri = uri;
+        }
+
+
+
+
+        public String getPostUri(){
+            return uri.get("posts");
+        }
+        public String getCommentUri(){
+            return uri.get("comments");
+        }
+    }
+
 }
