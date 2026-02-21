@@ -47,13 +47,12 @@ public class SupplierService {
     }
 
 
-    public ResponseEntity<Response> getSupplier(){
+    public List<SupplierResponseDto> getSupplier(){
         List<Supplier> suppliers = supplierRepository.findAll();
-
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success" , "successfully retrieve supplier" , supplierMapper.toDto(suppliers)));
+        return supplierMapper.toDto(suppliers);
     }
 
-    public ResponseEntity<Response> addSupplier(SupplierDto supplierDto) {
+    public void addSupplier(SupplierDto supplierDto) {
         if (supplierRepository.existsByName(supplierDto.getName())) {
             throw new DuplicateResourceException("supplier already exists with name : " + supplierDto.getName());
         }
@@ -61,10 +60,10 @@ public class SupplierService {
         Supplier supplier = supplierMapper.toEntity(supplierDto);
 
         supplierRepository.save(supplier);
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully added supplier"));
+
     }
 
-    public ResponseEntity<Response> updateSupplierById(Long id , UpdateSupplierDto dto) {
+    public void updateSupplierById(Long id , UpdateSupplierDto dto) {
         Supplier existingSupplier = supplierRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("supplier not found with id: " + id));
 
@@ -72,15 +71,13 @@ public class SupplierService {
         supplierMapper.updateSupplierFromDto(existingSupplier , dto);
         supplierRepository.save(existingSupplier);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully updated supplier"));
     }
 
-    public ResponseEntity<Response> deleteSupplierById(Long id) {
+    public void deleteSupplierById(Long id) {
         if (!supplierRepository.existsById(id)) {
             throw new ResourceNotFoundException("supplier not found with id: " + id);
         }
 
         supplierRepository.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully deleted supplier"));
     }
 }

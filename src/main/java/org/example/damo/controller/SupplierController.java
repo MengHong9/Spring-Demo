@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/suppliers")
 public class SupplierController {
@@ -34,22 +36,28 @@ public class SupplierController {
 
     @GetMapping
     public ResponseEntity<Response> getSuppliers() {
-        return supplierService.getSupplier();
+        List<SupplierResponseDto> dtos = supplierService.getSupplier();
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully retrieved data" , dtos));
     }
 
     @PostMapping
     public ResponseEntity<Response> createSupplier(@Valid @RequestBody SupplierDto supplierDto) {
-        return supplierService.addSupplier(supplierDto);
+        supplierService.addSupplier(supplierDto);
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully added supplier"));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Response> updateSupplier( @PathVariable Long id, @Valid @RequestBody UpdateSupplierDto payload) {
-        return supplierService.updateSupplierById(id , payload);
+         supplierService.updateSupplierById(id , payload);
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully updated supplier"));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Response> deleteSupplier(@PathVariable Long id) {
-        return supplierService.deleteSupplierById(id);
+         supplierService.deleteSupplierById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success("200","success", "successfully deleted supplier"));
+
     }
 
 }
