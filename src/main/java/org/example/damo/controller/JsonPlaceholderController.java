@@ -8,9 +8,7 @@ import org.example.damo.service.JsonPlaceholderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +32,15 @@ public class JsonPlaceholderController {
         List<JsonPlaceholderCommentDto> comments = jsonPlaceholderService.getComments();
 
         return ResponseEntity.status(HttpStatus.OK).body(Response.success("200" , "success" , "successfully retrieved data" , comments));
+    }
+
+
+
+    @PostMapping("/posts")
+    public ResponseEntity<Response> createPost(@RequestBody JsonPlaceholderPostDto payload){
+        JsonPlaceholderPostDto post = jsonPlaceholderService.createPost(payload);
+
+       return ResponseEntity.status(HttpStatus.OK).body(Response.success("201" , "success" , "successfully created data" , post));
     }
 
 
