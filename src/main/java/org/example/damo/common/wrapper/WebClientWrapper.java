@@ -2,9 +2,12 @@ package org.example.damo.common.wrapper;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -24,9 +27,12 @@ public class WebClientWrapper {
                 .uri(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError , this::handleErrorResponse)
                 .bodyToMono(responseType)
                 .timeout(Duration.ofMillis(5000))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+                        .filter(throwable -> throwable instanceof WebClientResponseException && ((WebClientResponseException) throwable).getStatusCode().is5xxServerError())
+                )
                 .block();
     }
 
@@ -37,10 +43,14 @@ public class WebClientWrapper {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(payload)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError , this::handleErrorResponse)
                 .bodyToMono(responseType)
                 .timeout(Duration.ofMillis(5000))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+                        .filter(throwable -> throwable instanceof WebClientResponseException && ((WebClientResponseException) throwable).getStatusCode().is5xxServerError())
+                )
                 .block();
+
     }
 
 
@@ -54,7 +64,25 @@ public class WebClientWrapper {
                 .bodyToMono(responseType)
                 .timeout(Duration.ofMillis(5000))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
+    }
 
+
+    private Mono<Throwable> handleErrorResponse(ClientResponse  response){
+        return response.bodyToMono(String.class)
+                .flatMap(body -> {
+                    String errorMessage = "Client Error" + response.statusCode();
+
+                    return Mono.error(
+                            new WebClientResponseException(
+                                    errorMessage,
+                                    response.statusCode().value(),
+                                    response.statusCode().toString(),
+                                    null,
+                                    body.getBytes(),
+                                    null
+                            )
+                    );
+                });
     }
 
 }
