@@ -1,6 +1,7 @@
 package org.example.damo.service;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.example.damo.dto.order.OrderDto;
 
 import org.example.damo.dto.order.OrderResponseDto;
@@ -9,9 +10,9 @@ import org.example.damo.entity.Order;
 
 import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.OrderMapper;
-import org.example.damo.model.BaseResponeModel;
 import org.example.damo.repository.OrderRepository;
 
+import org.example.damo.service.mail.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -23,6 +24,7 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class OrderService {
 
     @Autowired
@@ -35,6 +37,9 @@ public class OrderService {
     @Autowired
     private StockManagementService stockManagementService;
 
+    @Autowired
+    private NotificationService notificationService;
+
 
     public List<OrderResponseDto> listOrders() {
         List<Order> orders = orderRepository.findAll();
@@ -46,12 +51,21 @@ public class OrderService {
     @Transactional
     public void createOrder(OrderDto payload) {
 
+        String threadName = Thread.currentThread().getName();
+
+        log.info("[SYNC-ORDER] Creating order | Thread Name: {}", threadName);
         stockManagementService.reserveStockForOrder(payload.getOrderItems());
 
         // create order entity
         Order order = orderMapper.toEntity(payload);
         orderRepository.save(order);
 
+        log.info("[SYNC-ORDER] Order created successfully with order: {} | Thread Name: {}", order.getId(), threadName);
+        log.info("[SYNC-ORDER] Trigger send notification asynchronously for order: {} | Thread Name: {}", order.getId(), threadName );
+
+
+        notificationService.sendOrderConfirmationNotification(order.getId(),"Your order has been created");
+        log.info("[SYNC-ORDER] Completed order and triggered send notification");
     }
 
 
