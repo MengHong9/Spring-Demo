@@ -42,6 +42,10 @@ config:
       uri:
         posts: /posts
         comments: /comments
+  telegram:
+    base-url: https://api.telegram.org/bot8675838268:AAHh-Tj6G650-2eX4J7em3PBXUtum82-jIY/sendMessage
+    token: 8675838268:AAHh-Tj6G650-2eX4J7em3PBXUtum82-jIY
+    chat-id: -5217598057
 
 
 

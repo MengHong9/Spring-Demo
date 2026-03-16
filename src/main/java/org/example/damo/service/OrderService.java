@@ -64,7 +64,7 @@ public class OrderService {
         log.info("[SYNC-ORDER] Trigger send notification asynchronously for order: {} | Thread Name: {}", order.getId(), threadName );
 
 
-        notificationService.sendOrderConfirmationNotification(order.getId(),"Your order has been created");
+        notificationService.sendOrderConfirmationNotification(order);
         log.info("[SYNC-ORDER] Completed order and triggered send notification");
     }
 

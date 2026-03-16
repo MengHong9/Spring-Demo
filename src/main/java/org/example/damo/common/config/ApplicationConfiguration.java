@@ -13,6 +13,8 @@ public class ApplicationConfiguration {
     private Security security;
     private Pagination pagination;
     private JsonPlaceholder jsonPlaceholder;
+    private Telegram telegram;
+
 
     public Security getSecurity() {
         return security;
@@ -36,6 +38,12 @@ public class ApplicationConfiguration {
         this.jsonPlaceholder = jsonPlaceholder;
     }
 
+    public Telegram getTelegram() {
+        return telegram;
+    }
+    public void setTelegram(Telegram telegram) {
+        this.telegram = telegram;
+    }
 
 
     public static class Security {
@@ -118,5 +126,40 @@ public class ApplicationConfiguration {
             return uri.get("comments");
         }
     }
+
+
+
+
+    public static class Telegram{
+        private String baseUrl;
+        private String token;
+        private String chatId;
+
+        public String getBaseUrl(){
+            return baseUrl;
+        }
+        public void setBaseUrl(String baseUrl){
+            this.baseUrl = baseUrl;
+        }
+        public String getToken(){
+            return token;
+        }
+        public void setToken(String token){
+            this.token = token;
+        }
+        public String getChatId(){
+            return chatId;
+        }
+        public void setChatId(String chatId){
+            this.chatId = chatId;
+        }
+
+
+
+        public String getUrl(){
+            return this.baseUrl.replace("{TOKEN}", this.token);
+        }
+    }
+
 
 }
