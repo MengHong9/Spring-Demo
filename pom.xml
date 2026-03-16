@@ -34,6 +34,12 @@
 
 
 
+        <!-- Build docker image -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
        <!-- WebClient dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

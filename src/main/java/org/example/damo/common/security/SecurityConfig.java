@@ -63,6 +63,7 @@ public class SecurityConfig {
                         authz
                                 .requestMatchers("/api/v1/user/**").hasRole("admin")
                                 .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
