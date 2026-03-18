@@ -1,24 +1,55 @@
 server:
-  port: 9090
+  port: ${PORT:8080}
 
 spring:
   application:
     name: damo
   datasource:
-    url: jdbc:postgresql://localhost:5432/myDB_prod
-    username: postgres
-    password: 412006
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/myDB_prod}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:412006}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:MyVeryStrongPassword}
+  # configuration cache type
+  cache:
+    type: redis
 
 config:
   security:
-    secret: 95fb0a7b70e8e854d4f8bdbd2f1ef754b58866345824ae466813c8e2d9a9ce35
-    expiration: 100000 #ms
-    refresh-token-expiration: 10800000 # 3 hours = 10800000ms
+    secret: ${JWT_SECRET:95fb0a7b70e8e854d4f8bdbd2f1ef754b58866345824ae466813c8e2d9a9ce35}
+    expiration: ${JWT_EXPIRATION:3600000} #ms
+    refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000} # 3 hours = 10800000ms
+
+
+
+  pagination:
+    base-url: http://localhost:8080/api/v1
+    uri:
+      product: /products/paginated
+      stock: /stocks/paginated
+      supplier: /suppliers/paginated
+      user: /user/paginated
+      order: /orders/paginated
+
+
+
+  json-placeholder:
+    base-url: https://jsonplaceholder.typicode.com
+    uri:
+      posts: /posts
+      comments: /comments
+  telegram:
+    base-url: https://api.telegram.org/bot8675838268:AAHh-Tj6G650-2eX4J7em3PBXUtum82-jIY/sendMessage
+    token: ${TELEGRAM_TOKEN:8675838268:AAHh-Tj6G650-2eX4J7em3PBXUtum82-jIY}
+    chat-id: ${TELEGRAM_CHAT_ID:-5217598057}
 
 
 
