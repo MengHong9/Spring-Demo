@@ -16,6 +16,12 @@ spring:
       host: localhost
       port: 6379
       password: MyVeryStrongPassword
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
   # configuration cache type
   cache:
     type: redis
