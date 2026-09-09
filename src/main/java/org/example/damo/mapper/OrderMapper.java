@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class OrderMapper {
@@ -68,7 +69,7 @@ public class OrderMapper {
     public void updateEntityFromDto(OrderUpdateDto dto, Order entity) {
         if (dto == null || entity == null) return;
 
-        entity.setStatus(dto.getStatus());
+        entity.setStatus(dto.getStatus().toUpperCase(Locale.ROOT));
     }
 
     private Double calculateTotalPrice(List<OrderItemResponseDto> items) {

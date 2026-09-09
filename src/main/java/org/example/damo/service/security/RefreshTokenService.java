@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.naming.AuthenticationException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 
 
@@ -38,7 +39,7 @@ public class RefreshTokenService {
 
         RefreshToken refreshTokenEntity = new RefreshToken();
         refreshTokenEntity.setToken(refreshToken);
-        refreshTokenEntity.setExpiresAt(LocalDateTime.now().plusHours(expiration));
+        refreshTokenEntity.setExpiresAt(LocalDateTime.now().plus(expiration, ChronoUnit.MILLIS));
         refreshTokenEntity.setUser(user);
 
         return refreshTokenRepository.save(refreshTokenEntity);

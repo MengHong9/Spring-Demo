@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.core.ParameterizedTypeReference;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -33,6 +34,21 @@ public class WebClientWrapper {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
                         .filter(throwable -> throwable instanceof WebClientResponseException && ((WebClientResponseException) throwable).getStatusCode().is5xxServerError())
                 )
+                .block();
+    }
+
+    public <T> T getSync(String url, ParameterizedTypeReference<T> responseType) {
+        return webClient
+                .get()
+                .uri(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, this::handleErrorResponse)
+                .bodyToMono(responseType)
+                .timeout(Duration.ofMillis(5000))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+                        .filter(throwable -> throwable instanceof WebClientResponseException
+                                && ((WebClientResponseException) throwable).getStatusCode().is5xxServerError()))
                 .block();
     }
 

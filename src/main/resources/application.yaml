@@ -1,5 +1,11 @@
 
 spring:
+
+#  services:
+#    app:
+#      build: .
+#      ports:
+#        - "8080:8080"
   application:
     name: damo
   datasource:
@@ -11,20 +17,20 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      password: MyVeryStrongPassword
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
-  # configuration cache type
-  cache:
-    type: redis
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#      password: MyVeryStrongPassword
+#  kafka:
+#    bootstrap-servers: localhost:9092
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#
+#  # configuration cache type
+#  cache:
+#    type: redis
 
 config:
   security:
@@ -45,15 +51,14 @@ config:
 
 
   json-placeholder:
-      base-url: https://jsonplaceholder.typicode.com
-      uri:
-        posts: /posts
-        comments: /comments
+    base-url: https://jsonplaceholder.typicode.com
+    uri:
+      posts: /posts
+      comments: /comments
   telegram:
     base-url: https://api.telegram.org/bot8675838268:AAHh-Tj6G650-2eX4J7em3PBXUtum82-jIY/sendMessage
     token: 8675838268:AAHh-Tj6G650-2eX4J7em3PBXUtum82-jIY
     chat-id: -5217598057
-
 
 
 

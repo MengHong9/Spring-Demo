@@ -8,12 +8,16 @@ import org.example.damo.dto.order.OrderResponseDto;
 import org.example.damo.dto.order.OrderUpdateDto;
 import org.example.damo.entity.Order;
 
+import org.example.damo.event.model.OrderEvent;
 import org.example.damo.exception.model.ResourceNotFoundException;
 import org.example.damo.mapper.OrderMapper;
 import org.example.damo.repository.OrderRepository;
 
+import org.example.damo.service.kafka.ProducerService;
 import org.example.damo.service.mail.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 
 import org.springframework.stereotype.Service;
@@ -41,6 +45,9 @@ public class OrderService {
     private NotificationService notificationService;
 
 
+    @Autowired
+    private ProducerService<OrderEvent> producerService;
+
     public List<OrderResponseDto> listOrders() {
         List<Order> orders = orderRepository.findAll();
 
@@ -58,17 +65,24 @@ public class OrderService {
 
         // create order entity
         Order order = orderMapper.toEntity(payload);
-        orderRepository.save(order);
+        orderRepository.saveAndFlush(order);
 
         log.info("[SYNC-ORDER] Order created successfully with order: {} | Thread Name: {}", order.getId(), threadName);
         log.info("[SYNC-ORDER] Trigger send notification asynchronously for order: {} | Thread Name: {}", order.getId(), threadName );
 
 
-        notificationService.sendOrderConfirmationNotification(order);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                producerService.sendMessage("order-event", new OrderEvent(order.getId()));
+                notificationService.sendOrderConfirmationNotification(order);
+            }
+        });
         log.info("[SYNC-ORDER] Completed order and triggered send notification");
     }
 
 
+    @Transactional
     public OrderResponseDto updateOrderStatus(Long orderId, OrderUpdateDto payload) {
         Order existingOrder = orderRepository.findById(orderId)
                         .orElseThrow(() -> {

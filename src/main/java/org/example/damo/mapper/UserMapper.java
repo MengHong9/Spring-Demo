@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Locale;
 
 
 @Component
@@ -22,7 +23,7 @@ public class UserMapper {
         entity.setPassword(dto.getPassword());
         entity.setAge(dto.getAge());
         entity.setEmail(dto.getEmail());
-        entity.setRole(dto.getRole());
+        entity.setRole(dto.getRole().toUpperCase(Locale.ROOT));
         entity.setAddress(dto.getAddress());
 
         return entity;
@@ -57,7 +58,7 @@ public class UserMapper {
         }
         entity.setName(dto.getName());
         entity.setAddress(dto.getAddress());
-        entity.setRole(dto.getRole());
+        entity.setRole(dto.getRole().toUpperCase(Locale.ROOT));
     }
 
 

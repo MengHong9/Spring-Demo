@@ -9,6 +9,7 @@ import org.example.damo.common.wrapper.WebClientWrapper;
 import org.example.damo.dto.external.JsonPlaceholderCommentDto;
 import org.example.damo.dto.external.JsonPlaceholderPostDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,9 +42,7 @@ public class JsonPlaceholderService {
         String url = BASE_URL.concat(POSTS_URI);
 
 
-        List<JsonPlaceholderPostDto> response =(List<JsonPlaceholderPostDto>)  webClientWrapper.getSync(url , List.class);
-
-        return response;
+        return webClientWrapper.getSync(url, new ParameterizedTypeReference<List<JsonPlaceholderPostDto>>() {});
 
 
     }
@@ -53,9 +52,7 @@ public class JsonPlaceholderService {
 
         String url = BASE_URL.concat(COMMENTS_URI);
 
-        List<JsonPlaceholderCommentDto> response = webClientWrapper.getSync(url , List.class);
-
-        return response;
+        return webClientWrapper.getSync(url, new ParameterizedTypeReference<List<JsonPlaceholderCommentDto>>() {});
     }
 
 

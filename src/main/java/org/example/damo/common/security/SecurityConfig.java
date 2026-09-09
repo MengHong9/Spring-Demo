@@ -3,7 +3,6 @@ package org.example.damo.common.security;
 
 import org.example.damo.common.filter.JwtAuthenticationFilter;
 import org.example.damo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,26 +19,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private UserService userService;
-
-
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Autowired
-    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http,
+            UserService userService,
+            PasswordEncoder passwordEncoder) throws Exception {
         AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
         // 1 -> UserDetailService
@@ -47,7 +36,7 @@ public class SecurityConfig {
 
         authBuilder
                 .userDetailsService(userService)
-                .passwordEncoder(this.passwordEncoder());
+                .passwordEncoder(passwordEncoder);
 
 
 
@@ -55,25 +44,30 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            AuthenticationManager authenticationManager,
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+            CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz ->
                         authz
-                                .requestMatchers("/api/v1/user/**").hasRole("admin")
+                                .requestMatchers("/api/v1/user/**").hasRole("ADMIN")
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-                .authenticationManager(this.authenticationManager(http))
+                .authenticationManager(authenticationManager)
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
 
-                .addFilterBefore(jwtAuthenticationFilter , UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

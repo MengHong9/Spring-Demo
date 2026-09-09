@@ -3,6 +3,7 @@ package org.example.damo.service;
 
 
 import org.example.damo.dto.user.ChangePasswordUserDto;
+import org.example.damo.dto.user.UserDto;
 import org.example.damo.dto.user.UserResponseDto;
 import org.example.damo.dto.user.UserUpdateDto;
 import org.example.damo.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -33,6 +35,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserMapper mapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
 
 
@@ -41,6 +46,19 @@ public class UserService implements UserDetailsService {
 
         List<UserResponseDto> dtos = mapper.toDtoList(userData);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseWithAdditionalDateModel("success" , "successfully retrieve user" , dtos));
+    }
+
+    public void createUser(UserDto payload) {
+        if (userRepository.existsByName(payload.getName())) {
+            throw new org.example.damo.exception.model.DuplicateResourceException("user already exists with name: " + payload.getName());
+        }
+        if (userRepository.existsByEmail(payload.getEmail())) {
+            throw new org.example.damo.exception.model.DuplicateResourceException("user already exists with email: " + payload.getEmail());
+        }
+
+        User user = mapper.toEntity(payload);
+        user.setPassword(passwordEncoder.encode(payload.getPassword()));
+        userRepository.save(user);
     }
 
 
@@ -86,7 +104,7 @@ public class UserService implements UserDetailsService {
 
 
         //old password is incorrect
-        if (!Objects.equals(user.getPassword(), payload.getOldPassword())){
+        if (!passwordEncoder.matches(payload.getOldPassword(), user.getPassword())){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new BaseResponeModel("fail" , "old password is incorrect"));
         }
 
@@ -95,7 +113,7 @@ public class UserService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponeModel("fail" , "new password and confirm password must be the same"));
         }
 
-        mapper.updateEntityChangePassword(user , payload.getNewPassword());
+        mapper.updateEntityChangePassword(user, passwordEncoder.encode(payload.getNewPassword()));
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponeModel("success" , "successfully changed password"));

@@ -1,12 +1,16 @@
 package org.example.damo.dto.order;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.example.damo.common.annotation.ValidEnum;
 import org.example.damo.common.enums.OrderStatus;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+
 public class OrderUpdateDto {
+    
     @JsonProperty("status")
-    @ValidEnum(enumClass = OrderStatus.class , message = "Value must be one or PENDING,FAILED,SUCCESS")
+    @NotBlank(message = "status is required")
+    @ValidEnum(enumClass = OrderStatus.class , message = "Value must be one of PENDING,FAILED,SUCCESS")
     private String status;
 
     public String getStatus() {
@@ -17,3 +21,4 @@ public class OrderUpdateDto {
         this.status = status;
     }
 }
+ 

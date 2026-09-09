@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableCaching
+//@EnableCaching
 @EnableAsync
 public class DamoApplication {
 

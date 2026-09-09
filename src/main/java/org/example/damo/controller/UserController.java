@@ -35,6 +35,7 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<Response> createUserData(@Valid @RequestBody UserDto payload) {
+        userService.createUser(payload);
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.success("201" , "success" , "successfully created user"));
     }
 
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @PatchMapping("/{user_id}/change-password")
-    public ResponseEntity<BaseResponeModel> checkPassword(@PathVariable("user_id") Long userId, @RequestBody ChangePasswordUserDto payload) {
+    public ResponseEntity<BaseResponeModel> checkPassword(@PathVariable("user_id") Long userId, @Valid @RequestBody ChangePasswordUserDto payload) {
         return userService.changePassword(userId, payload);
     }
 

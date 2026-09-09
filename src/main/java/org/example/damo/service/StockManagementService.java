@@ -34,7 +34,10 @@ public class StockManagementService {
         // example: 1: 100 , 2: 40
         Map<Long , Integer> requiredQuantities = orderItemDtos
                 .stream()
-                .collect(Collectors.toMap(OrderItemDto::getProductId , OrderItemDto::getAmount));
+                .collect(Collectors.toMap(
+                        OrderItemDto::getProductId,
+                        OrderItemDto::getAmount,
+                        Integer::sum));
 
 
         // deduct stock for each product
