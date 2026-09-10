@@ -11,7 +11,8 @@ public class RefreshTokenCleanupSchedule {
     @Autowired
     private RefreshTokenService refreshTokenService;
 
-    @Scheduled(cron = "0 0 0/12 * * ?")
+
+    @Scheduled(cron = "0 0 0 * * *")
     public void cleanupExpiredTokensAndRevokeTokens() {
         refreshTokenService.deleteExpiredAndRevokeTokens();
     }
